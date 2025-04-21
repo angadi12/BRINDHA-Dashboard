@@ -1,9 +1,15 @@
-import React from 'react'
+import Statcard from "@/components/Analyticscomponents/Statcard";
+import SellersManagement from "@/components/Productsellercomponents/sellers-management";
+import React from "react";
 
 const page = () => {
   return (
-    <div>page</div>
-  )
-}
+    <div className="p-4 bg-gray-50">
+      <Statcard/>
 
-export default page
+      <SellersManagement />
+    </div>
+  );
+};
+
+export default page;

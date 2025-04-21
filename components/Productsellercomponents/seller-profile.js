@@ -15,6 +15,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import RevenueOverview from "../Analyticscomponents/revenue-overview";
+import RevenueCommission from "../revenuecomponent/revenue-commission-card";
+import ProductTable from "./product-table";
 
 export default function SellerProfile({ seller }) {
   // Default seller data if none provided
@@ -47,7 +50,7 @@ export default function SellerProfile({ seller }) {
       </div> */}
 
       {/* Top Section */}
-      <Card className="mb-6 border border-gray-200">
+      <Card className="mb-3 border border-gray-200">
         <CardContent className="p-3">
           <div className="flex flex-col md:flex-row gap-6 relative">
             {/* Store Icon */}
@@ -61,7 +64,6 @@ export default function SellerProfile({ seller }) {
                 <h1 className="text-2xl font-bold mb-1">
                   {sellerData.businessName}
                 </h1>
-              
               </div>
 
               <Link
@@ -165,6 +167,14 @@ export default function SellerProfile({ seller }) {
           </div>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch py-4">
+        <RevenueOverview />
+        <RevenueCommission/>
+      </div>
+      <div >
+        <ProductTable/>
+      </div>
     </div>
   );
 }

@@ -54,13 +54,13 @@ export default function SellerApplicationsTable() {
           <TabsList className="grid w-[600px] grid-cols-2 mb-4 bg-white">
             <TabsTrigger
               value="seller"
-              className={`text-sm border-0 rounded-none font-medium ${activeTab === "seller" ? "border-b-2 border-teal-600" : ""}`}
+              className={`text-sm border-0 rounded-none font-medium ${activeTab === "seller" ? "border-b-2 border-[#106C83]" : ""}`}
             >
               Latest Seller Applications
             </TabsTrigger>
             <TabsTrigger
               value="provider"
-              className={`text-sm border-0 rounded-none shadow-none  text-[#939393] font-medium ${activeTab === "provider" ? "border-b-2 text-black border-teal-600" : ""}`}
+              className={`text-sm border-0 rounded-none shadow-none  text-[#939393] font-medium ${activeTab === "provider" ? "border-b-2 text-black border-[#106C83]" : ""}`}
             >
               Latest Service Provider Applications
             </TabsTrigger>
