@@ -9,14 +9,14 @@ export function Providers({ children }) {
   return (
     <HeroUIProvider>
       <section>
-        <main className="grid grid-cols-1 md:grid-cols-[auto_1fr] w-full h-screen overflow-hidden">
-          <div className="w-full h-full md:h-screen overflow-hidden">
+        <main className="grid grid-cols-1 md:grid-cols-[auto_1fr] w-full h-screen overflow-hidden ">
+          <div className="w-full ">
             <Sidenav/>
           </div>
 
-          <section className="flex  flex-col  w-full  h-full md:h-screen p-0 ">
+          <section className="flex  flex-col  w-full  h-screen   ">
             <Nav/>
-            <ScrollArea className="w-full max-h-screen pb-14">{children}</ScrollArea>
+            <ScrollArea className="w-full h-screen pb-14">{children}</ScrollArea>
           </section>
         </main>
       </section>

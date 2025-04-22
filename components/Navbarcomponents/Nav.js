@@ -4,7 +4,7 @@ import { Bell, ChevronDown, ChevronRight } from "lucide-react"
 
 const Nav = () => {
   return (
-    <header className="h-16 py-8 border-b flex items-center justify-between px-6">
+    <header className="h-16 py-8 border-b flex items-center justify-between px-6 sticky top-0 z-50 bg-white">
     <div>
       <h1 className="text-lg font-medium">Welcome back, Martin!</h1>
       <p className="text-sm text-gray-500">Here&apos;s what&apos;s happening today.</p>
