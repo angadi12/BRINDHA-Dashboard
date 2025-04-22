@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import OngoingProjects from "./ongoing-projects";
+import Image from "next/image";
 
 export default function ProjectTable() {
   const [activeTab, setActiveTab] = useState("all-works");
@@ -299,12 +300,12 @@ function ViewRequirementModal() {
           <div>
             <h3 className="font-semibold mb-2">Reference</h3>
             <div className="grid grid-cols-2 gap-4">
-              <img
+              <Image
                 src="/placeholder.svg?height=150&width=250"
                 alt="Reference image 1"
                 className="rounded-md object-cover w-full h-32"
               />
-              <img
+              <Image
                 src="/placeholder.svg?height=150&width=250"
                 alt="Reference image 2"
                 className="rounded-md object-cover w-full h-32"
