@@ -24,7 +24,7 @@ function SettingsItem({ href, label }) {
       href={href}
       className="flex items-center justify-between p-4 rounded-lg border border-border bg-background hover:bg-accent/5 transition-colors"
     >
-      <span className="text-foreground">{label}</span>
+      <span className="text-foreground text-sm">{label}</span>
       <ChevronRight className="h-5 w-5 text-muted-foreground" />
     </Link>
   )
