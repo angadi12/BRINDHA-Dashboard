@@ -286,14 +286,14 @@ function ViewRequirementModal() {
         </DialogHeader>
         <div className="space-y-6">
           <div className="bg-gray-50 p-4 rounded-md">
-            <h3 className="font-semibold mb-2">Buyer's Request</h3>
+            <h3 className="font-semibold mb-2">{`Buyer's Request`}</h3>
             <p className="text-sm text-gray-700">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+             {` Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
               reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+              nulla pariatur. Excepteur sint occaecat cupidatat non proident.`}
             </p>
           </div>
 
