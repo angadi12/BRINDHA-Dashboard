@@ -17,8 +17,8 @@ export default function NotFound() {
         <h1 className="text-4xl font-bold text-gray-800 mb-3">404</h1>
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Not Found</h2>
         <p className="text-gray-600 mb-8">
-          Could not find the requested resource. The page you're looking for may
-          have been moved or doesn't exist.
+         {` Could not find the requested resource. The page you're looking for may
+          have been moved or doesn't exist.`}
         </p>
 
         <Link

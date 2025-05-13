@@ -72,7 +72,7 @@ console.log(data)
               </div>
             ) : error ? (
               <div className="flex items-center justify-center py-10 text-red-500">
-                <AlertCircle className="mr-2" /> {error}
+                {error}
               </div>
             ) : data?.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
