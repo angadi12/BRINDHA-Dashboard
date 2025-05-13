@@ -106,7 +106,7 @@ export default function Error({ error, reset }) {
               className="px-8 py-0.5 rounded-sm w-48  border-none bg-[#106C83] "
             >
               <RefreshCcw className="h-4 w-4" />
-              <span>Try again</span>
+              <span className="text-white">Try again</span>
             </Button>
           </motion.div>
         </CardFooter>

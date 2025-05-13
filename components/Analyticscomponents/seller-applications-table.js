@@ -58,8 +58,9 @@ console.log(data)
 
           <div className="absolute right-4 top-4 ">
             <Button
+              onClick={()=>router.push("/product-seller")}
               variant="default"
-              className="bg-[#106C83] hover:bg-[#106C83]"
+              className="bg-[#106C83] hover:bg-[#106C83] cursor-pointer"
             >
               View all
             </Button>
