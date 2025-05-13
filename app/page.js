@@ -8,7 +8,7 @@ import RevenueOverview from "@/components/Analyticscomponents/revenue-overview"
 import SellerApplicationsTable from "@/components/Analyticscomponents/seller-applications-table"
 export default function Dashboard() {
   return (
-    <main className=" bg-gray-50">
+    <ScrollArea className=" bg-gray-50 h-screen pb-14">
     
     
 
@@ -86,6 +86,6 @@ export default function Dashboard() {
          
         </div>
      
-    </main>
+    </ScrollArea>
   )
 }

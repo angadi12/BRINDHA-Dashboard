@@ -143,7 +143,7 @@ export default function SellersManagement() {
 
 
   return (
-    <div className="w-full rounded-lg border h-full bg-white p-6">
+    <div className="w-full rounded-lg border h-full bg-white p-4">
       {/* Main Tabs */}
       <Tabs defaultValue="applications" className="">
         <TabsList className="p-0 bg-transparent space-x-2 h-auto">

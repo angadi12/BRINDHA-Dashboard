@@ -14,9 +14,11 @@ import { MdEmail } from "react-icons/md";
 import { IoMdLock } from "react-icons/io";
 import { Superadminlogin } from "@/lib/API/Auth/Auth";
 import { useRouter } from "next/navigation";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
+import { useToast } from "@/components/ui/toast-provider";
 
 export default function LoginPage() {
+  const { addToast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,12 +38,22 @@ export default function LoginPage() {
 
     // --- Validation ---
     if (!email || !password) {
-      setError("Please fill in both email and password.");
+      addToast({
+        title: `Password and email are required`,
+        description: `Password and email are required`,
+        variant: "destructive",
+        duration: 5000,
+      });
       return;
     }
 
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
+      addToast({
+        title: `Please enter a valid email address.`,
+        description: `Please enter a valid email address.`,
+        variant: "destructive",
+        duration: 5000,
+      });
       return;
     }
 
@@ -52,15 +64,19 @@ export default function LoginPage() {
       const result = await Superadminlogin(data);
 
       if (result && result.status) {
-      // Store token and user info in localStorage
-     Cookies.set('token', result.token)
-
-      // Redirect to dashboard
-      router.push("/");
-
-    } else {
-      setError(result?.message || "Invalid email or password.");
-    }
+        // Store token and user info in localStorage
+        Cookies.set("token", result.token);
+        addToast({
+        title: `Login Successful`,
+        description: `Login Successful`,
+        variant: "success",
+        duration: 5000,
+      });
+        // Redirect to dashboard
+        router.push("/");
+      } else {
+        setError(result?.message || "Invalid email or password.");
+      }
     } catch (error) {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -178,7 +194,7 @@ export default function LoginPage() {
                     className="w-full py-6 cursor-pointer rounded-2xl bg-[#106C83] hover:bg-[#0a5a6d] text-white"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Logging in..." : "Login"}
+                   <span className={isLoading?"loader":"hidden"}></span> {isLoading ? "Logging in..." : "Login"}
                   </Button>
                 </form>
               </div>

@@ -86,10 +86,10 @@ export default function ProjectTable() {
 
   return (
     <div className="w-full  mx-auto p-4 bg-white rounded-lg border border-gray-200">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 w-full">
         <Tabs
           defaultValue="all-works"
-          className="w-auto mx-auto"
+          className="w-full mx-auto"
           onValueChange={setActiveTab}
         >
           <TabsList className="grid w-auto grid-cols-5">

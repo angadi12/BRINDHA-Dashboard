@@ -41,7 +41,7 @@ export default function SellerProfile({ seller }) {
   const sellerData = seller || defaultSeller;
 
   return (
-    <div className="w-full  mx-auto">
+    <div className="w-full p-4 mx-auto">
       {/* <div className="mb-6">
         <Button variant="ghost" className="text-gray-600 pl-0">
           <ArrowLeft className="mr-2 h-4 w-4" />

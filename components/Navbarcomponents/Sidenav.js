@@ -37,22 +37,20 @@ const Sidenav = () => {
   return (
     <div
       className={`h-screen  sticky top-0 bottom-0 left-0 overflow-hidden border-r  border-gray-300  hidden md:flex lg:flex flex-col items-center bg-white transition-all duration-700 ease-in-out ${
-        isMinimized ? "w-20" : "w-60"
+        isMinimized ? "w-20" : "w-60   "
       }`}
     >
       <div className="p-0 sticky top-0  border-b w-full h-16 flex justify-center items-center">
         <Image
           src={Logo}
           alt="Brindah Logo"
-          height={0}
-          width={0}
-          className=" w-auto"
+        loading="lazy"
+          className=" w-auto "
         />
         <Image
           src={Logo2}
           alt="Brindah"
-          height={0}
-          width={0}
+         loading="lazy"
           className=" w-auto"
         />
       </div>
