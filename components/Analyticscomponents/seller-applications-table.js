@@ -22,7 +22,7 @@ export default function SellerApplicationsTable() {
   const router=useRouter()
 
   useEffect(() => {
-    dispatch(fetchAllSellars(""));
+    dispatch(fetchAllSellars("all"));
   }, [dispatch]);
 
 console.log(data)

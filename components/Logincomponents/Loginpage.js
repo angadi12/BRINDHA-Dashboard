@@ -194,7 +194,7 @@ export default function LoginPage() {
                     className="w-full py-6 cursor-pointer rounded-2xl bg-[#106C83] hover:bg-[#0a5a6d] text-white"
                     disabled={isLoading}
                   >
-                   <span className={isLoading?"loader":"hidden"}></span> {isLoading ? "Logging in..." : "Login"}
+                   <span className={isLoading?"loader":"hidden"}></span> {isLoading ? "" : "Login"}
                   </Button>
                 </form>
               </div>

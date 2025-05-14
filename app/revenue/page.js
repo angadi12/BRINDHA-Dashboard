@@ -13,14 +13,24 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import Revenuecard from "@/components/revenuecomponent/Revenuecard";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function SellerDashboard() {
   const [activeTab, setActiveTab] = useState("product-sellers");
 
   return (
-    <div className="w-full bg-gray-50 mx-auto p-4">
-      <div className="flex justify-between items-center mb-6 ">
+    <ScrollArea className="w-full bg-gray-50 mx-auto pb-14 h-screen">
+
+     <section className="p-4">
+      <div className="flex justify-between items-center  mb-4 ">
         <Tabs
           defaultValue="product-sellers"
           className="w-auto bg-gray-50"
@@ -49,12 +59,12 @@ export default function SellerDashboard() {
             </TabsTrigger>
           </TabsList>
         </Tabs>
-        <Button className="bg-[#106C83] hover:bg-[#106C83] text-sm">Withdraw</Button>
+        <Button className="bg-[#106C83] hover:bg-[#106C83] text-sm">
+          Withdraw
+        </Button>
       </div>
-
-    <Revenuecard/>
-
-      <div className="bg-white rounded-lg border p-4 mb-6">
+      <Revenuecard />
+      <div className="bg-white rounded-lg border p-4 mb-2">
         <div className="flex justify-between items-center mb-6">
           <Tabs defaultValue="earnings" className="w-auto">
             <TabsList className="bg-transparent p-0">
@@ -88,29 +98,51 @@ export default function SellerDashboard() {
 
         <div className="overflow-x-auto">
           <Table>
-          <TableHeader  className="bg-gray-100 border border-gray-300 ">
-          <TableRow className="bg-gray-50">
-                <TableHead className="text-[#9C9C9C] text-sm font-medium">CLIENT NAME</TableHead>
-                <TableHead className="text-[#9C9C9C] text-sm font-medium">ORDER ID</TableHead>
-                <TableHead className="text-[#9C9C9C] text-sm font-medium">DATE</TableHead>
-                <TableHead className="text-[#9C9C9C] text-sm font-medium">PAYMENT METHOD</TableHead>
-                <TableHead className="text-[#9C9C9C] text-sm font-medium">AMOUNT</TableHead>
-                <TableHead className="text-[#9C9C9C] text-sm font-medium">COMMISSION</TableHead>
-                <TableHead className="text-[#9C9C9C] text-sm font-medium">STATUS</TableHead>
-                <TableHead className="text-[#9C9C9C] text-sm font-medium">ACTIONS</TableHead>
+            <TableHeader className="bg-gray-100 border border-gray-300 ">
+              <TableRow className="bg-gray-50">
+                <TableHead className="text-[#9C9C9C] text-sm font-medium">
+                  CLIENT NAME
+                </TableHead>
+                <TableHead className="text-[#9C9C9C] text-sm font-medium">
+                  ORDER ID
+                </TableHead>
+                <TableHead className="text-[#9C9C9C] text-sm font-medium">
+                  DATE
+                </TableHead>
+                <TableHead className="text-[#9C9C9C] text-sm font-medium">
+                  PAYMENT METHOD
+                </TableHead>
+                <TableHead className="text-[#9C9C9C] text-sm font-medium">
+                  AMOUNT
+                </TableHead>
+                <TableHead className="text-[#9C9C9C] text-sm font-medium">
+                  COMMISSION
+                </TableHead>
+                <TableHead className="text-[#9C9C9C] text-sm font-medium">
+                  STATUS
+                </TableHead>
+                <TableHead className="text-[#9C9C9C] text-sm font-medium">
+                  ACTIONS
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {[...Array(7)].map((_, index) => (
                 <TableRow key={index} className="border-t border-gray-200 h-14">
-                <TableCell>Robbin K</TableCell>
+                  <TableCell>Robbin K</TableCell>
                   <TableCell>#order672</TableCell>
                   <TableCell>26/03/25</TableCell>
                   <TableCell>UPI</TableCell>
-                  <TableCell>{index === 2 ? "- Rs 5,789" : "+ Rs 5,789"}</TableCell>
+                  <TableCell>
+                    {index === 2 ? "- Rs 5,789" : "+ Rs 5,789"}
+                  </TableCell>
                   <TableCell>10%</TableCell>
                   <TableCell>
-                    <span className={`${index === 2 ? "text-red-500" : "text-green-500"}`}>
+                    <span
+                      className={`${
+                        index === 2 ? "text-red-500" : "text-green-500"
+                      }`}
+                    >
                       {index === 2 ? "Refunded" : "Complete"}
                     </span>
                   </TableCell>
@@ -125,6 +157,8 @@ export default function SellerDashboard() {
           </Table>
         </div>
       </div>
-    </div>
+
+     </section>
+    </ScrollArea>
   );
 }

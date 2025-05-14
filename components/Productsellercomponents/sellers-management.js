@@ -26,15 +26,26 @@ import dashiconsstore from "@/public/Asset/dashiconsstore.png";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllSellars } from "@/lib/Redux/Slices/sellarSlice";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default function SellersManagement() {
   const [profileTab, setProfileTab] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   const { data, loading, error } = useSelector((state) => state.sellar);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchAllSellars(""));
-  }, [dispatch]);
+    dispatch(fetchAllSellars(profileTab));
+  }, [dispatch,profileTab]);
 
   const activeSellers = [
     {
@@ -91,6 +102,15 @@ export default function SellersManagement() {
     },
   ];
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data?.slice(indexOfFirstItem, indexOfLastItem) || [];
+  const totalPages = Math.ceil((data?.length || 0) / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="w-full rounded-lg border h-full bg-white p-4">
       {/* Main Tabs */}
@@ -117,7 +137,7 @@ export default function SellersManagement() {
               <div className="flex -mb-px">
                 <button
                   onClick={() => setProfileTab("all")}
-                  className={`mr-8 py-4 text-sm font-medium ${
+                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
                     profileTab === "all"
                       ? "border-b-2 border-[#106C83] text-[#106C83]"
                       : "text-gray-500 hover:text-gray-700"
@@ -127,7 +147,7 @@ export default function SellersManagement() {
                 </button>
                 <button
                   onClick={() => setProfileTab("pending")}
-                  className={`mr-8 py-4 text-sm font-medium ${
+                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
                     profileTab === "pending"
                       ? "border-b-2 border-[#106C83] text-[#106C83]"
                       : "text-gray-500 hover:text-gray-700"
@@ -137,7 +157,7 @@ export default function SellersManagement() {
                 </button>
                 <button
                   onClick={() => setProfileTab("rejected")}
-                  className={`mr-8 py-4 text-sm font-medium ${
+                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
                     profileTab === "rejected"
                       ? "border-b-2 border-[#106C83] text-[#106C83]"
                       : "text-gray-500 hover:text-gray-700"
@@ -147,7 +167,7 @@ export default function SellersManagement() {
                 </button>
                 <button
                   onClick={() => setProfileTab("blacklisted")}
-                  className={`mr-8 py-4 text-sm font-medium ${
+                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
                     profileTab === "blacklisted"
                       ? "border-b-2 border-[#106C83] text-[#106C83]"
                       : "text-gray-500 hover:text-gray-700"
@@ -264,6 +284,54 @@ export default function SellersManagement() {
               </Table>
             )}
           </div>
+
+          {!loading && !error && data?.length > 0 && (
+            <div className="flex justify-center mt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() =>
+                        handlePageChange(Math.max(1, currentPage - 1))
+                      }
+                      className={
+                        currentPage === 1
+                          ? "pointer-events-none opacity-50"
+                          : "cursor-pointer"
+                      }
+                    />
+                  </PaginationItem>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => handlePageChange(page)}
+                          isActive={currentPage === page}
+                          className="cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  )}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() =>
+                        handlePageChange(Math.min(totalPages, currentPage + 1))
+                      }
+                      className={
+                        currentPage === totalPages
+                          ? "pointer-events-none opacity-50"
+                          : "cursor-pointer"
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="active">

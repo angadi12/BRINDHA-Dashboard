@@ -6,7 +6,7 @@ import pending from "@/public/Asset/pending.png"
 import withdraw from "@/public/Asset/withdraw.png"
 const Revenuecard = () => {
   return (
-    <div className=" overflow-auto ">
+    <div className=" overflow-auto  ">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <div className="bg-white border rounded-lg p-4 flex items-start gap-3">

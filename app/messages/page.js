@@ -15,6 +15,7 @@ import Image from "next/image";
 import messages from "@/public/Asset/messages.png";
 import accountpending from "@/public/Asset/accountpending.png";
 import User from "@/public/Asset/User.png";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function MessagingInterface() {
   // Sample data
@@ -75,6 +76,14 @@ export default function MessagingInterface() {
       lastMessageTime: "12:11 PM",
       messages: [],
     },
+    {
+      id: "6",
+      name: "Robert Carl",
+      avatar: "/placeholder.svg?height=50&width=50",
+      lastMessage: "Hi my name is sheela, I want to...",
+      lastMessageTime: "12:11 PM",
+      messages: [],
+    },
   ];
 
   const [selectedContact, setSelectedContact] = useState(contacts[0]);
@@ -92,7 +101,7 @@ export default function MessagingInterface() {
   };
 
   return (
-    <div className=" mx-auto p-4 w-full">
+    <ScrollArea className=" mx-auto p-4 w-full h-screen pb-14 mb-8">
       {/* Top Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <Card className="p-4 flex shadow-none rounded-md flex-row items-start">
@@ -131,7 +140,7 @@ export default function MessagingInterface() {
       </div>
 
       {/* Messaging Interface */}
-      <Card className="overflow-hidden shadow-none rounded-md">
+      <Card className="overflow-hidden shadow-none rounded-md mb-4 p-0 w-full">
         <div className="flex flex-col h-[500px]">
           {/* Messages Header */}
           <div className="flex justify-between items-center p-2 border-b ">
@@ -141,19 +150,19 @@ export default function MessagingInterface() {
             </Button>
           </div>
 
-          <div className="flex h-full">
+          <div className="flex h-full w-full">
             {/* Left Sidebar */}
-            <div className="w-1/3 border-r flex flex-col">
+            <div className="w-1/3 border-r flex flex-col h-full">
               {/* Tabs */}
               <Tabs defaultValue="customers" className="w-full">
-                <TabsList className="grid grid-cols-3 h-auto p-0">
+                <TabsList className="grid grid-cols-3 h-auto p-0 w-full">
                   <TabsTrigger
                     value="customers"
                     onClick={() => setActiveTab("customers")}
-                    className={`rounded-none py-2 ${
+                    className={`rounded-none py-2 cursor-pointer ${
                       activeTab === "customers"
-                        ? "bg-[#106C83] text-white"
-                        : "bg-white"
+                        ? " text-[#106C83] focus:bg-[#106C83]"
+                        : "bg-white text-black"
                     }`}
                   >
                     Customers
@@ -161,10 +170,10 @@ export default function MessagingInterface() {
                   <TabsTrigger
                     value="sellers"
                     onClick={() => setActiveTab("sellers")}
-                    className={`rounded-none py-2 ${
+                    className={`rounded-none py-2 cursor-pointer ${
                       activeTab === "sellers"
-                        ? "bg-[#106C83] text-white"
-                        : "bg-white"
+                        ? " text-[#106C83] focus:bg-[#106C83]"
+                        : "bg-white text-black"
                     }`}
                   >
                     Sellers
@@ -172,10 +181,10 @@ export default function MessagingInterface() {
                   <TabsTrigger
                     value="providers"
                     onClick={() => setActiveTab("providers")}
-                    className={`rounded-none py-2 ${
+                    className={`rounded-none py-2 cursor-pointer ${
                       activeTab === "providers"
-                        ? "bg-[#106C83] text-white"
-                        : "bg-white"
+                        ? " text-[#106C83] focus:bg-[#106C83]"
+                        : "bg-white text-black"
                     }`}
                   >
                     Providers
@@ -184,11 +193,11 @@ export default function MessagingInterface() {
               </Tabs>
 
               {/* Contact List */}
-              <div className="flex-grow overflow-y-auto">
+              <ScrollArea className="flex-grow overflow-y-auto pb-12">
                 {contacts.map((contact) => (
                   <div
                     key={contact.id}
-                    className={`flex items-center p-4 cursor-pointer hover:bg-gray-50 ${
+                    className={`flex items-center p-4 cursor-pointer ${
                       selectedContact.id === contact.id
                         ? "bg-[#106C83] text-white"
                         : ""
@@ -223,11 +232,11 @@ export default function MessagingInterface() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </ScrollArea>
             </div>
 
             {/* Right Chat Area */}
-            <div className="w-2/3 flex flex-col">
+            <div className="w-2/3 flex flex-col  pb-12">
               {/* Chat Header */}
               <div className="p-4 border-b flex items-center">
                 <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
@@ -251,7 +260,7 @@ export default function MessagingInterface() {
               </div>
 
               {/* Chat Messages */}
-              <div className="flex-grow p-4 overflow-y-auto">
+              <ScrollArea className="flex-grow p-4 overflow-y-auto">
                 {selectedContact.messages.map((message) => (
                   <div
                     key={message.id}
@@ -303,10 +312,10 @@ export default function MessagingInterface() {
                     )}
                   </div>
                 ))}
-              </div>
+              </ScrollArea>
 
               {/* Message Input */}
-              <div className="p-4 border-t flex">
+              <div className="p-4 border-t flex ">
                 <Input
                   placeholder="Write message..."
                   value={newMessage}
@@ -329,6 +338,6 @@ export default function MessagingInterface() {
           </div>
         </div>
       </Card>
-    </div>
+    </ScrollArea>
   );
 }
