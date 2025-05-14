@@ -131,7 +131,7 @@ export default function NotificationSheet() {
                 <Bell className="h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium">No notifications</h3>
                 <p className="text-sm text-muted-foreground">
-                  You're all caught up! No new notifications.
+                 {` You're all caught up! No new notifications.`}
                 </p>
               </div>
             ) : (
