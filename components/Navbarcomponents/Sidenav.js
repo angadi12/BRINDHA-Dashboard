@@ -119,7 +119,7 @@ const Sidenav = () => {
                   <button
                     key={item.label}
                     onClick={() => router.push(item.path)}
-                    className={`w-full flex items-center px-4 py-2 text-sm rounded-md transition-all duration-300 ${
+                    className={`w-56 flex items-center px-4 py-2 text-sm rounded-md transition-all duration-300 ${
                       isActive(item.path) ? "bg-[#106C83] text-white" : "text-gray-700 hover:bg-gray-100"
                     }`}
                   >
@@ -157,7 +157,7 @@ const Sidenav = () => {
               ) : (
                 <button
                   onClick={() => router.push("/settings")}
-                  className={`w-full flex items-center px-4 py-2 text-sm rounded-md transition-all duration-300 ${
+                  className={`w-56 flex items-center px-4 py-2 text-sm rounded-md transition-all duration-300 ${
                     isActive("/settings") ? "bg-[#106C83] text-white" : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
@@ -205,7 +205,7 @@ const Sidenav = () => {
               <div className="w-8 h-8 rounded-full bg-gray-300 mr-2 overflow-hidden">
                 <Image src={User || "/placeholder.svg"} alt="User Avatar" width={32} height={32} />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 w-56">
                 <p className="text-sm font-medium">Martin Sharma</p>
                 <p className="text-xs text-gray-500 truncate">Thursday, Mar 20, 2025</p>
               </div>
