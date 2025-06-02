@@ -26,7 +26,7 @@ import {
   fetchSellarprofile,
 } from "@/lib/Redux/Slices/sellarSlice";
 import { Banknote, Landmark, Users } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 import Revenuegraph from "./Revenuegraph";
 
 export default function SellerProfile({ seller }) {
@@ -41,7 +41,7 @@ export default function SellerProfile({ seller }) {
   );
   const data = analytics?.[id];
 
-console.log(data)
+  console.log(data);
 
   const dispatch = useDispatch();
 
@@ -273,7 +273,11 @@ console.log(data)
           </Card>
 
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-4 items-stretch py-4">
-            <Revenuegraph revenueoverview={data?.graph} loadingrevnue={loadinganalytics} errorrevenue={analyticserror}/>
+            <Revenuegraph
+              revenueoverview={data?.graph}
+              loadingrevnue={loadinganalytics}
+              errorrevenue={analyticserror}
+            />
             {/* <RevenueCommission /> */}
           </div>
           <div>
