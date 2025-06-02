@@ -15,6 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllSellars } from "@/lib/Redux/Slices/sellarSlice";
 import { useRouter } from "next/navigation";
+import DocumentApprovalPage from "../Productsellercomponents/document-approval";
+
 export default function SellerApplicationsTable() {
   const [activeTab, setActiveTab] = useState("seller");
   const dispatch = useDispatch();
@@ -24,8 +26,6 @@ export default function SellerApplicationsTable() {
   useEffect(() => {
     dispatch(fetchAllSellars("all"));
   }, [dispatch]);
-
-  console.log(data);
 
   return (
     <div className="w-full rounded-lg border bg-white p-3 mt-4 relative">
@@ -153,7 +153,7 @@ export default function SellerApplicationsTable() {
                             View Profile
                           </span>
                         ) : (
-                          <DocumentApprovalPage />
+                          <DocumentApprovalPage/>
                         )}
                       </TableCell>
                     </TableRow>
