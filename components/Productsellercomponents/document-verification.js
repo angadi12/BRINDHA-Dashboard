@@ -36,16 +36,16 @@ const documentMeta = {
 };
 
 export default function Documents({ document ,id}) {
-  if (!document || typeof document !== "object") {
-    return <p className="text-sm text-red-500">No documents available.</p>;
-  }
-  const entries = Object.entries(document);
-
   const { updateStatusLoading, updateStatusError, updatedSellerStatus } =
     useSelector((state) => state.sellar);
   const [loadingAction, setLoadingAction] = useState(null);
   const { addToast } = useToast();
   const dispatch = useDispatch();
+  if (!document || typeof document !== "object") {
+    return <p className="text-sm text-red-500">No documents available.</p>;
+  }
+  const entries = Object.entries(document);
+
 
  const handleStatusUpdate = (status) => {
   if (!id) {
