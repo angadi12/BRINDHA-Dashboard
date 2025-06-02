@@ -33,17 +33,18 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { fetchAllorders } from "@/lib/Redux/Slices/orderSlice";
 
 export default function Ordersmanagement() {
   const [profileTab, setProfileTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const { data, loading, error } = useSelector((state) => state.sellar);
+  const { data, loading, error } = useSelector((state) => state.order);
   const dispatch = useDispatch();
-
+  console.log(data);
   useEffect(() => {
-    dispatch(fetchAllSellars(profileTab));
+    dispatch(fetchAllorders({ page: 1, limit: 10 }));
   }, [dispatch, profileTab]);
 
   const activeSellers = [
@@ -121,7 +122,7 @@ export default function Ordersmanagement() {
           >
             All Orders
           </TabsTrigger>
-          <TabsTrigger
+          {/* <TabsTrigger
             value="active"
             className="rounded-md px-6 py-2 text-base font-medium data-[state=active]:bg-[#106C83] data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-gray-300 data-[state=inactive]:text-gray-700 data-[state=inactive]:hover:bg-gray-50"
           >
@@ -132,7 +133,7 @@ export default function Ordersmanagement() {
             className="rounded-md px-6 py-2 text-base font-medium data-[state=active]:bg-[#106C83] data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-gray-300 data-[state=inactive]:text-gray-700 data-[state=inactive]:hover:bg-gray-50"
           >
             Service Orders
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="all">
@@ -236,6 +237,9 @@ export default function Ordersmanagement() {
                       Items
                     </TableHead>
                     <TableHead className="text-xs font-medium text-gray-500 uppercase">
+                      payment type
+                    </TableHead>
+                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
                       amount
                     </TableHead>
                     <TableHead className="text-xs font-medium text-gray-500 uppercase">
@@ -253,28 +257,30 @@ export default function Ordersmanagement() {
                       className="border-b border-gray-200 h-12"
                     >
                       <TableCell className="font-medium">
-                        {application?.BussinessName}
+                        {application?.orderId}
                       </TableCell>
                       <TableCell>
                         {application?.CompanyId?.Address?.City}
                       </TableCell>
                       <TableCell>{application?.Vendorname}</TableCell>
                       <TableCell>{application.Email}</TableCell>
+                      <TableCell>{application?.paymentMode}</TableCell>
                       <TableCell>{application?.Number}</TableCell>
-                      <TableCell>{application.registrationDate}</TableCell>
+                      <TableCell>{application?.payment?.paymentMode}</TableCell>
+                      <TableCell>{application?.payment?.amount}</TableCell>
                       <TableCell>
                         <span
                           className={`font-medium ${
-                            application.isCompanyVerified === "Pending"
-                              ? "text-amber-500"
-                              : application.isCompanyVerified === "Approved"
+                            application?.payment?.paymentStatus === "Pending"
+                               ? "text-amber-500"
+                              : application?.payment?.paymentStatus ==="Completed"
                               ? "text-green-500"
-                              : application.isCompanyVerified === "Rejected"
+                              : application?.payment?.paymentStatus ==="Rejected"
                               ? "text-red-500"
                               : "text-gray-500"
                           }`}
                         >
-                          {application.isCompanyVerified}
+                          {application?.paymentStatus}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -774,8 +780,6 @@ export default function Ordersmanagement() {
             </div>
           )}
         </TabsContent>
-       
-      
       </Tabs>
     </div>
   );

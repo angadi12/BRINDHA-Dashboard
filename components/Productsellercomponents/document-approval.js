@@ -36,7 +36,8 @@ const initialDocuments = [
   },
 ];
 
-export default function DocumentApprovalPage() {
+export default function DocumentApprovalPage({data}) {
+  console.log(data)
   const [open, setOpen] = useState(false);
   const [documents, setDocuments] = useState(initialDocuments);
 

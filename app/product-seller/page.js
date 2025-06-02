@@ -1,4 +1,4 @@
-import Statcard from "@/components/Analyticscomponents/Statcard";
+import Statcard from "@/components/Productsellercomponents/Statcard";
 import SellersManagement from "@/components/Productsellercomponents/sellers-management";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import React from "react";

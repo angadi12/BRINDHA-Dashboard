@@ -17,24 +17,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import Revenueskeleton from "./revenue-overview-skeleton";
+import Revenueskeleton from "@/components/Analyticscomponents/revenue-overview-skeleton";
 
-export default function RevenueOverview() {
-  const [selectedValue, setSelectedValue] = useState("week");
-
-  const dispatch = useDispatch();
-  const { revenueoverview, loadingrevnue, errorrevenue } = useSelector(
-    (state) => state.sellar
-  );
-
-  const handleSelectChange = (value) => {
-    setSelectedValue(value);
-  };
-
-  useEffect(() => {
-    dispatch(fetchrevenueandcommision(selectedValue));
-  }, [dispatch, selectedValue]);
-
+export default function Revenuegraph({revenueoverview,loadingrevnue,errorrevenue}) {
+ 
   return (
     <>
       {loadingrevnue ? (
@@ -60,21 +46,7 @@ export default function RevenueOverview() {
                 <div className="h-5 w-5 rounded bg-[#FFB300]"></div>
                 <span className="text-gray-800 text-sm">Commission</span>
               </div>
-              <div className="flex items-center gap-2 ml-4 shrink-0">
-                <Select
-                  value={selectedValue}
-                  onValueChange={handleSelectChange}
-                >
-                  <SelectTrigger className="w-[130px] border-gray-200 bg-white text-sm">
-                    <SelectValue placeholder="This Week" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="week">This Week</SelectItem>
-                    <SelectItem value="month">This Month</SelectItem>
-                    <SelectItem value="year">This Year</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              
             </div>
           </div>
 

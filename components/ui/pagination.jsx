@@ -54,7 +54,7 @@ function PaginationLink({
       className={cn(buttonVariants({
         variant: isActive ? "outline" : "ghost",
         size,
-      }), className)}
+      }), className ,isActive?"bg-[#106C83] text-white":"")}
       {...props} />)
   );
 }

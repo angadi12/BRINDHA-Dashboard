@@ -1,47 +1,47 @@
 "use client";
 import React, { useEffect } from "react";
 import Image from "next/image";
-import Wallet from "@/public/Asset/Wallet.png";
-import Commission from "@/public/Asset/Commission.png";
-import pending from "@/public/Asset/pending.png";
-import withdraw from "@/public/Asset/withdraw.png";
+import Dash1 from "@/public/Asset/Dash1.png";
+import Dash2 from "@/public/Asset/Dash2.png";
+import Dash3 from "@/public/Asset/Dash3.png";
+import Dash4 from "@/public/Asset/Dash4.png";
 import { useDispatch, useSelector } from "react-redux";
-import { FetchAllcount } from "@/lib/Redux/Slices/revenueSlice";
+import { fetchAllSellarscount } from "@/lib/Redux/Slices/sellarSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const Revenuecard = () => {
-  const { data, loading, error } = useSelector((state) => state.revenue);
+const Statcard = () => {
+  const { count, loadingcount, counterror } = useSelector(
+    (state) => state.sellar
+  );
   const dispatch = useDispatch();
-  console.log(data);
+
   useEffect(() => {
-    dispatch(FetchAllcount());
+    dispatch(fetchAllSellarscount());
   }, [dispatch]);
 
-  const revenue = {
-    totalVendorAmount: data?.summary?.totalVendorAmount || 0,
-    totalCommission: data?.summary?.totalCommission || 0,
-    totalWithdrawn: data?.summary?.totalWithdrawn || 0,
-    totalPendingPayout: data?.summary?.totalPendingPayout || 0,
+  // Default data if the loading state is active
+  const data = {
+    productSellers: count?.totalVendors || 0,
+    serviceProviders: count?.approvedVendors || 0,
+    pendingApprovals: count?.pendingVendors || 0,
+    rejectedProfiles: count?.rejectedVendors || 0,
   };
 
   return (
-    <div className=" overflow-auto  ">
+    <div className="overflow-auto">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        {/* Product Sellers Card */}
         <div className="bg-white border rounded-lg p-4 flex items-start gap-3">
           <div className="w-14 h-14 rounded-md ring-1 ring-gray-300 flex items-center justify-center">
-            {loading ? (
-              <Skeleton className="w-14 h-14 bg-gray-200 rounded-md" />
-            ) : (
-              <Image
-                src={Wallet}
-                alt="Total Earnings"
-                className="object-contain w-10 h-10"
-              />
-            )}
+           {loadingcount?<Skeleton className="w-14 h-14 bg-gray-200 rounded-md" />: <Image
+              src={Dash1}
+              alt="Product Sellers"
+              className="object-contain w-10 h-10"
+            />}
           </div>
           <div>
-            {loading ? (
+            {loadingcount ? (
               <>
                 <Skeleton className="h-4 w-32 bg-gray-200 rounded-md" />
 
@@ -50,62 +50,28 @@ const Revenuecard = () => {
             ) : (
               <>
                 <p className="text-sm font-medium text-gray-600">
-                  Total Earnings
+                  Product Sellers
                 </p>
 
                 <p className="text-2xl font-bold text-[#106C83]">
-                  {revenue?.totalVendorAmount}
+                  {data?.productSellers}
                 </p>
               </>
             )}
           </div>
         </div>
 
+        {/* Service Providers Card */}
         <div className="bg-white border rounded-lg p-4 flex items-start gap-3">
           <div className="w-14 h-14 rounded-md ring-1 ring-gray-300 flex items-center justify-center">
-            {loading ? (
-              <Skeleton className="w-14 h-14 bg-gray-200 rounded-md" />
-            ) : (
-              <Image
-                src={Commission}
-                alt="Total Commission"
-                className="object-contain w-10 h-10"
-              />
-            )}
+           {loadingcount?<Skeleton className="w-14 h-14 bg-gray-200 rounded-md" />:  <Image
+              src={Dash2}
+              alt="Service Providers"
+              className="object-contain w-10 h-10"
+            />}
           </div>
           <div>
-            {loading ? (
-              <>
-                <Skeleton className="h-4 w-32 bg-gray-200 rounded-md" />
-
-                <Skeleton className="h-8 w-16 mt-2 bg-gray-200 rounded-md" />
-              </>
-            ) : (
-              <>
-                <p className="text-sm font-medium text-gray-600">Commission</p>
-
-                <p className="text-2xl font-bold text-[#106C83]">
-                  {revenue?.totalCommission}
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-
-        <div className="bg-white border rounded-lg p-4 flex items-start gap-3">
-          <div className="w-14 h-14 rounded-md ring-1 ring-gray-300 flex items-center justify-center">
-            {loading ? (
-              <Skeleton className="w-14 h-14 bg-gray-200 rounded-md" />
-            ) : (
-              <Image
-                src={pending}
-                alt="Pending Payout"
-                className="object-contain w-10 h-10"
-              />
-            )}
-          </div>
-          <div>
-            {loading ? (
+            {loadingcount ? (
               <>
                 <Skeleton className="h-4 w-32 bg-gray-200 rounded-md" />
 
@@ -114,31 +80,27 @@ const Revenuecard = () => {
             ) : (
               <>
                 <p className="text-sm font-medium text-gray-600">
-                  Pending Payout
+                  Service Providers
                 </p>
-
                 <p className="text-2xl font-bold text-[#106C83]">
-                  {revenue?.totalPendingPayout}
+                  {data?.serviceProviders}
                 </p>
               </>
             )}
           </div>
         </div>
 
+        {/* Pending Approvals Card */}
         <div className="bg-white border rounded-lg p-4 flex items-start gap-3">
           <div className="w-14 h-14 rounded-md ring-1 ring-gray-300 flex items-center justify-center">
-            {loading ? (
-              <Skeleton className="w-14 h-14 bg-gray-200 rounded-md" />
-            ) : (
-              <Image
-                src={withdraw}
-                alt="Withdrawn"
-                className="object-contain w-10 h-10"
-              />
-            )}
+            {loadingcount?<Skeleton className="w-14 h-14 bg-gray-200 rounded-md" />:  <Image
+              src={Dash3}
+              alt="Pending Approvals"
+              className="object-contain w-10 h-10"
+            />}
           </div>
           <div>
-            {loading ? (
+            {loadingcount ? (
               <>
                 <Skeleton className="h-4 w-32 bg-gray-200 rounded-md" />
 
@@ -146,10 +108,40 @@ const Revenuecard = () => {
               </>
             ) : (
               <>
-                <p className="text-sm font-medium text-gray-600">Withdrawn</p>
-
+                <p className="text-sm font-medium text-gray-600">
+                  Pending Approvals
+                </p>
                 <p className="text-2xl font-bold text-[#106C83]">
-                  {revenue?.totalWithdrawn}
+                  {data?.pendingApprovals}
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Rejected Profiles Card */}
+        <div className="bg-white border rounded-lg p-4 flex items-start gap-3">
+          <div className="w-14 h-14 rounded-md ring-1 ring-gray-300 flex items-center justify-center">
+             {loadingcount?<Skeleton className="w-14 h-14 bg-gray-200 rounded-md" />: <Image
+              src={Dash4}
+              alt="Rejected Profiles"
+              className="object-contain w-10 h-10"
+            />}
+          </div>
+          <div>
+            {loadingcount ? (
+              <>
+                <Skeleton className="h-4 w-32 bg-gray-200 rounded-md" />
+
+                <Skeleton className="h-8 w-16 mt-2 bg-gray-200 rounded-md" />
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-medium text-gray-600">
+                  Rejected Profiles
+                </p>
+                <p className="text-2xl font-bold text-[#106C83]">
+                  {data?.rejectedProfiles}
                 </p>
               </>
             )}
@@ -160,4 +152,4 @@ const Revenuecard = () => {
   );
 };
 
-export default Revenuecard;
+export default Statcard;

@@ -19,13 +19,13 @@ export default function SellerApplicationsTable() {
   const [activeTab, setActiveTab] = useState("seller");
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.sellar);
-  const router=useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(fetchAllSellars("all"));
   }, [dispatch]);
 
-console.log(data)
+  console.log(data);
 
   return (
     <div className="w-full rounded-lg border bg-white p-3 mt-4 relative">
@@ -44,7 +44,7 @@ console.log(data)
             >
               Latest Seller Applications
             </TabsTrigger>
-            <TabsTrigger
+            {/* <TabsTrigger
               value="provider"
               className={`text-sm border-0 rounded-none shadow-none  text-[#939393] font-medium ${
                 activeTab === "provider"
@@ -53,12 +53,12 @@ console.log(data)
               }`}
             >
               Latest Service Provider Applications
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
 
           <div className="absolute right-4 top-4 ">
             <Button
-              onClick={()=>router.push("/product-seller")}
+              onClick={() => router.push("/product-seller")}
               variant="default"
               className="bg-[#106C83] hover:bg-[#106C83] cursor-pointer"
             >
@@ -115,7 +115,9 @@ console.log(data)
                       <TableCell className="font-medium">
                         {application?.BussinessName}
                       </TableCell>
-                      <TableCell>{application?.CompanyId?.Address?.City}</TableCell>
+                      <TableCell>
+                        {application?.CompanyId?.Address?.City}
+                      </TableCell>
                       <TableCell>{application?.Vendorname}</TableCell>
                       <TableCell>{application.Email}</TableCell>
                       <TableCell>{application?.Number}</TableCell>
@@ -139,12 +141,20 @@ console.log(data)
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <span
-                          onClick={()=>router.push(`/product-seller/profile/${application?._id}`)}
-                          className="text-teal-600 hover:underline cursor-pointer"
-                        >
-                          View Details
-                        </span>
+                        {application.isCompanyVerified === "Approved" ? (
+                          <span
+                            onClick={() =>
+                              router.push(
+                                `/product-seller/profile/${application?._id}`
+                              )
+                            }
+                            className="text-[#106C83] hover:underline font-medium"
+                          >
+                            View Profile
+                          </span>
+                        ) : (
+                          <DocumentApprovalPage />
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

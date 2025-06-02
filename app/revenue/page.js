@@ -47,7 +47,7 @@ export default function SellerDashboard() {
             >
               Product Sellers
             </TabsTrigger>
-            <TabsTrigger
+            {/* <TabsTrigger
               value="service-providers"
               className={`text-sm border-0 rounded-none font-medium ${
                 activeTab === "service-providers"
@@ -56,7 +56,7 @@ export default function SellerDashboard() {
               }`}
             >
               Service Providers
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
         </Tabs>
         <Button className="bg-[#106C83] hover:bg-[#106C83] text-sm">

@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import { Button } from "@heroui/react";
 import {
   Select,
   SelectContent,
@@ -34,78 +34,123 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useRouter } from "next/navigation";
+import Profilecard from "./Profilecard";
+import { Badge } from "@/components/ui/badge";
 
 export default function SellersManagement() {
+  const [selectedValue, setSelectedValue] = useState("this-week");
+  const [sortValue, setSortValue] = useState("sort-by");
   const [profileTab, setProfileTab] = useState("all");
+  const [Tab, setTab] = useState("applications");
+
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
+  const router = useRouter();
   const { data, loading, error } = useSelector((state) => state.sellar);
-  const dispatch = useDispatch();
+  const [filteredData, setFilteredData] = useState([]);
+  const { analytics, loadinganalytics, analyticserror } = useSelector(
+    (state) => state.sellar
+  );
 
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllSellars(profileTab));
-  }, [dispatch,profileTab]);
+  }, [dispatch, profileTab, selectedValue, sortValue, Tab]);
 
-  const activeSellers = [
-    {
-      businessName: "Business Name",
-      website: "www.businessname.com",
-      address: "This is for a sample address",
-      email: "businessname@gmail.com",
-      phone: "+91 9738687282",
-      alternatePhone: "+91 6783567389",
-      rating: 5.0,
-      reviews: 23,
-      totalProducts: 234,
-      revenue: 6876,
-      commission: 1876,
-    },
-    {
-      businessName: "Business Name",
-      website: "www.businessname.com",
-      address: "This is for a sample address",
-      email: "businessname@gmail.com",
-      phone: "+91 9738687282",
-      alternatePhone: "+91 6783567389",
-      rating: 5.0,
-      reviews: 23,
-      totalProducts: 234,
-      revenue: 6876,
-      commission: 1876,
-    },
-    {
-      businessName: "Business Name",
-      website: "www.businessname.com",
-      address: "This is for a sample address",
-      email: "businessname@gmail.com",
-      phone: "+91 9738687282",
-      alternatePhone: "+91 6783567389",
-      rating: 5.0,
-      reviews: 23,
-      totalProducts: 234,
-      revenue: 6876,
-      commission: 1876,
-    },
-    {
-      businessName: "Business Name",
-      website: "www.businessname.com",
-      address: "This is for a sample address",
-      email: "businessname@gmail.com",
-      phone: "+91 9738687282",
-      alternatePhone: "+91 6783567389",
-      rating: 5.0,
-      reviews: 23,
-      totalProducts: 234,
-      revenue: 6876,
-      commission: 1876,
-    },
-  ];
+  const handleSelectChange = (value) => {
+    console.log(value);
+    setSelectedValue(value);
+    filterAndSortData(value, sortValue);
+  };
+
+  const handleSortChange = (value) => {
+    setSortValue(value);
+    filterAndSortData(selectedValue, value); // Combine filtering and sorting
+  };
+
+  const convertToIST = (date) => {
+    const utcDate = new Date(date);
+    // IST is UTC + 5:30
+    const istOffset = 5.5 * 60 * 60 * 1000;
+    return new Date(utcDate.getTime() + istOffset);
+  };
+
+  const filterAndSortData = (period, sortBy) => {
+    const now = new Date();
+    const currentIST = convertToIST(now);
+    const currentMonth = currentIST.getMonth();
+    const currentYear = currentIST.getFullYear();
+
+    const filtered = data.filter((item) => {
+      const createdAtIST = convertToIST(item.createdAt);
+      const updatedAtIST = convertToIST(item.updatedAt);
+
+      if (period === "this-month") {
+        const createdInThisMonth =
+          createdAtIST.getMonth() === currentMonth &&
+          createdAtIST.getFullYear() === currentYear;
+
+        const updatedInThisMonth =
+          updatedAtIST.getMonth() === currentMonth &&
+          updatedAtIST.getFullYear() === currentYear;
+
+        return createdInThisMonth || updatedInThisMonth;
+      }
+
+      if (period === "this-week") {
+        const startOfWeek = new Date(currentIST);
+        startOfWeek.setDate(currentIST.getDate() - currentIST.getDay());
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        return createdAtIST >= startOfWeek || updatedAtIST >= startOfWeek;
+      }
+
+      if (period === "this-year") {
+        return (
+          createdAtIST.getFullYear() === currentYear ||
+          updatedAtIST.getFullYear() === currentYear
+        );
+      }
+
+      return true;
+    });
+
+    const sortedData = sortData(filtered, sortBy);
+    setFilteredData(sortedData);
+  };
+
+  const sortData = (data, sortBy) => {
+    switch (sortBy) {
+      case "name-asc":
+        return data?.sort((a, b) =>
+          (a?.BusinessName || "").localeCompare(b?.BusinessName || "")
+        );
+      case "name-desc":
+        return data?.sort((a, b) =>
+          (b?.BusinessName || "").localeCompare(a?.BusinessName || "")
+        );
+      case "rating-high":
+        return data?.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      case "rating-low":
+        return data?.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+      default:
+        return data;
+    }
+  };
+
+  useEffect(() => {
+    filterAndSortData(selectedValue, sortValue);
+  }, [selectedValue, sortValue, data]);
+
+  const handletabchange = (value) => {
+    setTab(value);
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data?.slice(indexOfFirstItem, indexOfLastItem) || [];
-  const totalPages = Math.ceil((data?.length || 0) / itemsPerPage);
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -114,19 +159,21 @@ export default function SellersManagement() {
   return (
     <div className="w-full rounded-lg border h-full bg-white p-4">
       {/* Main Tabs */}
-      <Tabs defaultValue="applications" className="">
+      <Tabs value={Tab} onValueChange={handletabchange} className="">
         <TabsList className="p-0 bg-transparent space-x-2 h-auto">
           <TabsTrigger
             value="applications"
-            className="rounded-md px-6 py-2 text-base font-medium data-[state=active]:bg-[#106C83] data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-gray-200 data-[state=inactive]:text-gray-700 data-[state=inactive]:hover:bg-gray-50"
+            onClick={() => setProfileTab("all")}
+            className="rounded-md px-6 py-2 cursor-pointer text-base font-medium data-[state=active]:bg-[#106C83] data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-gray-200 data-[state=inactive]:text-gray-700 data-[state=inactive]:hover:bg-gray-50"
           >
             Sellers Applications
           </TabsTrigger>
           <TabsTrigger
             value="active"
-            className="rounded-md px-6 py-2 text-base font-medium data-[state=active]:bg-[#106C83] data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-gray-300 data-[state=inactive]:text-gray-700 data-[state=inactive]:hover:bg-gray-50"
+            onClick={() => setProfileTab("Approved")}
+            className="rounded-md px-6 py-2 text-base cursor-pointer font-medium data-[state=active]:bg-[#106C83] data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-gray-300 data-[state=inactive]:text-gray-700 data-[state=inactive]:hover:bg-gray-50"
           >
-            Active Sellers
+            Approved Sellers
           </TabsTrigger>
         </TabsList>
 
@@ -178,7 +225,7 @@ export default function SellersManagement() {
               </div>
             </div>
             <div className="flex items-center gap-2 ml-4 shrink-0">
-              <Select defaultValue="this-week">
+              <Select value={selectedValue} onValueChange={handleSelectChange}>
                 <SelectTrigger className="w-[130px] border-gray-200 bg-white text-sm">
                   <SelectValue placeholder="This Week" />
                 </SelectTrigger>
@@ -188,9 +235,6 @@ export default function SellersManagement() {
                   <SelectItem value="this-year">This Year</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="icon" className="border-gray-200">
-                <Filter className="h-4 w-4" />
-              </Button>
             </div>
           </div>
 
@@ -204,7 +248,7 @@ export default function SellersManagement() {
               <div className="flex items-center justify-center py-10 text-red-500">
                 {error}
               </div>
-            ) : data?.length === 0 ? (
+            ) : filteredData?.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 No seller applications available
               </div>
@@ -239,7 +283,7 @@ export default function SellersManagement() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data?.map((application, index) => (
+                  {currentItems?.map((application, index) => (
                     <TableRow
                       key={index}
                       className="border-b border-gray-200 h-12"
@@ -253,30 +297,50 @@ export default function SellersManagement() {
                       <TableCell>{application?.Vendorname}</TableCell>
                       <TableCell>{application.Email}</TableCell>
                       <TableCell>{application?.Number}</TableCell>
-                      <TableCell>{application.registrationDate}</TableCell>
                       <TableCell>
-                        <span
+                        {new Date(application?.createdAt)?.toLocaleDateString(
+                          "en-GB"
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
                           className={`font-medium ${
                             application.isCompanyVerified === "Pending"
                               ? "text-amber-500"
                               : application.isCompanyVerified === "Approved"
-                              ? "text-green-500"
+                              ? "text-green-500 border-green-200 bg-green-50"
                               : application.isCompanyVerified === "Rejected"
                               ? "text-red-500"
                               : "text-gray-500"
                           }`}
                         >
                           {application.isCompanyVerified}
-                        </span>
+                        </Badge>
                       </TableCell>
                       <TableCell>
-                        {/* <span
-                        href="#"
-                        className="text-[#106C83] hover:underline font-medium"
-                      >
-                        View Details
-                      </span> */}
-                        <DocumentApprovalPage />
+                        {application.isCompanyVerified === "Approved" ? (
+                          <span
+                            onClick={() =>
+                              router.push(
+                                `/product-seller/profile/${application?._id}`
+                              )
+                            }
+                            className="text-[#106C83] cursor-pointer hover:underline font-medium"
+                          >
+                            View Profile
+                          </span>
+                        ) : (
+                          <span
+                            onClick={() =>
+                              router.push(
+                                `/product-seller/profiledoc/${application?._id}`
+                              )
+                            }
+                            className="text-[#106C83] cursor-pointer hover:underline font-medium"
+                          >
+                            View Details
+                          </span>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -285,7 +349,7 @@ export default function SellersManagement() {
             )}
           </div>
 
-          {!loading && !error && data?.length > 0 && (
+          {!loading && !error && filteredData.length > 0 && (
             <div className="flex justify-center mt-4">
               <Pagination>
                 <PaginationContent>
@@ -338,7 +402,7 @@ export default function SellersManagement() {
           <div className="flex justify-between items-center mb-2">
             <div className="w-full"></div>
             <div className="flex items-center gap-2 ml-4 shrink-0">
-              <Select defaultValue="sort-by">
+              <Select value={sortValue} onValueChange={handleSortChange}>
                 <SelectTrigger className="w-[130px] border-gray-200 bg-white text-sm">
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
@@ -354,83 +418,89 @@ export default function SellersManagement() {
           </div>
 
           {/* Seller Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {activeSellers.map((seller, index) => (
-              <Card
-                key={index}
-                className="border border-gray-200 rounded-lg overflow-hidden p-3"
-              >
-                <div className="bg-[#EDC5C5] p-8 flex justify-center items-center rounded-md">
-                  <Image
-                    src={dashiconsstore}
-                    alt="store"
-                    className=" object-contain  text-gray-800"
-                  />
-                </div>
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start mb-1">
-                    <h3 className="text-lg font-semibold">
-                      {seller.businessName}
-                    </h3>
-                    <div className="flex items-center text-sm">
-                      <span className="text-yellow-500 mr-1">★</span>
-                      <span className="font-medium">{seller.rating}</span>
-                      <span className="text-gray-500 ml-1">
-                        ({seller.reviews})
-                      </span>
-                    </div>
-                  </div>
-                  <Link
-                    href={`https://${seller.website}`}
-                    className="text-[#106C83] text-sm flex items-center hover:underline mb-4"
+          <div className=" rounded-md">
+            {loading ? (
+              <div className="flex items-center justify-center py-10 text-gray-500">
+                <span className="loader2 " />
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center py-10 text-red-500">
+                {error}
+              </div>
+            ) : data?.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                No seller applications available
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {data?.map((seller, index) => (
+                  <Card
+                    key={index}
+                    className="border border-gray-200 rounded-lg overflow-hidden p-3"
                   >
-                    {seller.website}
-                    <ChevronRight className="h-3 w-3 ml-1" />
-                  </Link>
+                    <div className="bg-[#EDC5C5] p-8 flex justify-center items-center rounded-md">
+                      <Image
+                        src={dashiconsstore}
+                        alt="store"
+                        className=" object-contain  text-gray-800"
+                      />
+                    </div>
+                    <CardContent className="p-2">
+                      <div className="flex justify-between items-start mb-1">
+                        <h3 className="text-lg font-semibold">
+                          {seller?.BussinessName}
+                        </h3>
+                        <div className="flex items-center text-sm">
+                          <span className="text-yellow-500 mr-1">★</span>
+                          <span className="font-medium">{seller?.rating}</span>
+                          <span className="text-gray-500 ml-1">
+                            ({seller?.reviews})
+                          </span>
+                        </div>
+                      </div>
+                      <Link
+                        href={`${seller?.CompanyId?.BussinessWebsite}`}
+                        className="text-[#106C83] text-sm flex items-center hover:underline mb-4"
+                      >
+                        {seller?.CompanyId?.BussinessWebsite}
+                        <ChevronRight className="h-3 w-3 ml-1" />
+                      </Link>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-start text-sm">
-                      <MapPin className="h-4 w-4 text-gray-500 mr-2 mt-0.5 shrink-0" />
-                      <span className="text-gray-700">{seller.address}</span>
-                    </div>
-                    <div className="flex items-center text-sm">
-                      <Mail className="h-4 w-4 text-gray-500 mr-2 shrink-0" />
-                      <span className="text-gray-700">{seller.email}</span>
-                    </div>
-                    <div className="flex items-center text-sm">
-                      <Phone className="h-4 w-4 text-gray-500 mr-2 shrink-0" />
-                      <span className="text-gray-700">
-                        {seller.phone} | {seller.alternatePhone}
-                      </span>
-                    </div>
-                  </div>
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-start text-sm">
+                          <MapPin className="h-4 w-4 text-gray-500 mr-2 mt-0.5 shrink-0" />
+                          <span className="text-gray-700">
+                            {seller?.CompanyId?.Address?.City}
+                          </span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <Mail className="h-4 w-4 text-gray-500 mr-2 shrink-0" />
+                          <span className="text-gray-700">{seller?.Email}</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <Phone className="h-4 w-4 text-gray-500 mr-2 shrink-0" />
+                          <span className="text-gray-700">
+                            {seller?.CompanyId?.BussinessNumber}
+                          </span>
+                        </div>
+                      </div>
 
-                  <div className="grid grid-cols-3 gap-2 border-t border-gray-200 pt-4">
-                    <div className="text-center">
-                      <p className="text-gray-500 text-xs">Total Products</p>
-                      <p className="font-semibold">{seller.totalProducts}</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-gray-500 text-xs">Revenue</p>
-                      <p className="font-semibold">
-                        ${seller.revenue.toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-gray-500 text-xs">Commission</p>
-                      <p className="font-semibold">
-                        ${seller.commission.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="p-0">
-                  <Button className="w-full rounded-md bg-[#106C83] hover:bg-[#106C83] text-white py-4">
-                    View Profile
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+                      <Profilecard id={seller?._id} />
+                    </CardContent>
+                    <CardFooter className="p-0">
+                      <Button
+                        onPress={() =>
+                          router.push(`/product-seller/profile/${seller?._id}`)
+                        }
+                        className="w-full cursor-pointer rounded-md bg-[#106C83] hover:bg-[#106C83] text-white py-2"
+                      >
+                        View Profile
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </TabsContent>
       </Tabs>

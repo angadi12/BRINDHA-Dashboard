@@ -26,12 +26,12 @@ import {
   fetchSellarprofile,
 } from "@/lib/Redux/Slices/sellarSlice";
 import { Banknote, Landmark, Users } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton"
-import Revenuegraph from "./Revenuegraph";
+import Documents from "./document-verification";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function SellerProfile({ seller }) {
+export default function SellerDocProfile() {
   const params = useParams();
-  const { id } = params;
+  const { props } = params;
   const { profile, loadingprofile, profileerror } = useSelector(
     (state) => state.sellar
   );
@@ -39,39 +39,19 @@ export default function SellerProfile({ seller }) {
   const { analytics, loadinganalytics, analyticserror } = useSelector(
     (state) => state.sellar
   );
-  const data = analytics?.[id];
-
-console.log(data)
+  const data = analytics?.[props];
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchSellarprofile(id));
+    dispatch(fetchSellarprofile(props));
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchSellaranalytics(id));
+    dispatch(fetchSellaranalytics(props));
   }, [dispatch]);
 
-  // Default seller data if none provided
-  const defaultSeller = {
-    businessName: "Business Name",
-    website: "www.businessname.com",
-    address: "This is for a sample address",
-    email: "businessname@gmail.com",
-    phone: "+91 9738687282",
-    alternatePhone: "+91 6783567389",
-    rating: 5.0,
-    reviews: 23,
-    totalProducts: 234,
-    revenue: 6876,
-    commission: 1876,
-    customers: "4K+",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
-  };
-
-  const sellerData = seller || defaultSeller;
+  console.log(profile);
 
   return (
     <>
@@ -103,13 +83,13 @@ console.log(data)
                     <ChevronRight className="h-3 w-3 ml-1" />
                   </Link>
 
-                  <div className="flex items-center mb-4">
+                  {/* <div className="flex items-center mb-4">
                     <span className="text-yellow-500 mr-1">★</span>
                     <span className="font-medium">{sellerData.rating}</span>
                     <span className="text-gray-500 ml-1">
                       ({sellerData.reviews})
                     </span>
-                  </div>
+                  </div> */}
 
                   <div className="space-y-3">
                     <div className="flex items-start text-sm">
@@ -262,7 +242,7 @@ console.log(data)
             </CardContent>
           </Card>
 
-          <Card className="border border-gray-200">
+          {/* <Card className="border border-gray-200">
             <CardContent className="p-6">
               <h2 className="text-lg font-medium mb-4">About & Description</h2>
               <div className="space-y-4 text-gray-700">
@@ -270,33 +250,20 @@ console.log(data)
                 <p>{sellerData.description}</p>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-4 items-stretch py-4">
-            <Revenuegraph revenueoverview={data?.graph} loadingrevnue={loadinganalytics} errorrevenue={analyticserror}/>
-            {/* <RevenueCommission /> */}
-          </div>
-          <div>
-            <ProductTable />
+            {loadingprofile ? (
+              <div className="p-4">
+                <p className="text-sm text-gray-500">Loading documents...</p>
+                {/* You can replace the above with a skeleton loader if you want */}
+              </div>
+            ) : (
+              <Documents document={profile?.CompanyId?.Documents}  id={profile?._id}/>
+            )}
           </div>
         </div>
       )}
     </>
-  );
-}
-
-function SkeletonCard() {
-  return (
-    <Card className="border rounded-lg overflow-hidden">
-      <CardContent className="p-6 relative">
-        <div className="absolute top-6 right-6">
-          <Skeleton className="h-11 w-11 rounded-md" />
-        </div>
-        <div className="pt-2">
-          <Skeleton className="h-4 w-24 mb-3" />
-          <Skeleton className="h-8 w-20" />
-        </div>
-      </CardContent>
-    </Card>
   );
 }
