@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchordersbyid } from "@/lib/Redux/Slices/orderSlice";
 import { useParams } from "next/navigation";
 
-const page = () => {
+const Page = () => {
   const { orderdata, orderloading, ordererror } = useSelector(
     (state) => state.order
   );
@@ -334,4 +334,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
