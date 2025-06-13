@@ -12,7 +12,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 const Revenuecard = () => {
   const { data, loading, error } = useSelector((state) => state.revenue);
   const dispatch = useDispatch();
-  console.log(data);
   useEffect(() => {
     dispatch(FetchAllcount());
   }, [dispatch]);

@@ -34,73 +34,19 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { fetchAllorders } from "@/lib/Redux/Slices/orderSlice";
+import { useRouter } from "next/navigation";
 
 export default function Ordersmanagement() {
   const [profileTab, setProfileTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const router = useRouter();
   const { data, loading, error } = useSelector((state) => state.order);
   const dispatch = useDispatch();
-  console.log(data);
+
   useEffect(() => {
     dispatch(fetchAllorders({ page: 1, limit: 10 }));
   }, [dispatch, profileTab]);
-
-  const activeSellers = [
-    {
-      businessName: "Business Name",
-      website: "www.businessname.com",
-      address: "This is for a sample address",
-      email: "businessname@gmail.com",
-      phone: "+91 9738687282",
-      alternatePhone: "+91 6783567389",
-      rating: 5.0,
-      reviews: 23,
-      totalProducts: 234,
-      revenue: 6876,
-      commission: 1876,
-    },
-    {
-      businessName: "Business Name",
-      website: "www.businessname.com",
-      address: "This is for a sample address",
-      email: "businessname@gmail.com",
-      phone: "+91 9738687282",
-      alternatePhone: "+91 6783567389",
-      rating: 5.0,
-      reviews: 23,
-      totalProducts: 234,
-      revenue: 6876,
-      commission: 1876,
-    },
-    {
-      businessName: "Business Name",
-      website: "www.businessname.com",
-      address: "This is for a sample address",
-      email: "businessname@gmail.com",
-      phone: "+91 9738687282",
-      alternatePhone: "+91 6783567389",
-      rating: 5.0,
-      reviews: 23,
-      totalProducts: 234,
-      revenue: 6876,
-      commission: 1876,
-    },
-    {
-      businessName: "Business Name",
-      website: "www.businessname.com",
-      address: "This is for a sample address",
-      email: "businessname@gmail.com",
-      phone: "+91 9738687282",
-      alternatePhone: "+91 6783567389",
-      rating: 5.0,
-      reviews: 23,
-      totalProducts: 234,
-      revenue: 6876,
-      commission: 1876,
-    },
-  ];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -194,9 +140,6 @@ export default function Ordersmanagement() {
                   <SelectItem value="this-year">This Year</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="icon" className="border-gray-200">
-                <Filter className="h-4 w-4" />
-              </Button>
             </div>
           </div>
 
@@ -210,7 +153,7 @@ export default function Ordersmanagement() {
               <div className="flex items-center justify-center py-10 text-red-500">
                 {error}
               </div>
-            ) : data?.length === 0 ? (
+            ) : currentItems?.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 No seller applications available
               </div>
@@ -221,9 +164,9 @@ export default function Ordersmanagement() {
                     <TableHead className="text-xs font-medium text-gray-500 uppercase">
                       Order id.
                     </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
+                    {/* <TableHead className="text-xs font-medium text-gray-500 uppercase">
                       date
-                    </TableHead>
+                    </TableHead> */}
                     <TableHead className="text-xs font-medium text-gray-500 uppercase">
                       customer name
                     </TableHead>
@@ -251,50 +194,43 @@ export default function Ordersmanagement() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data?.map((application, index) => (
+                  {currentItems?.map((application, index) => (
                     <TableRow
                       key={index}
                       className="border-b border-gray-200 h-12"
                     >
                       <TableCell className="font-medium">
-                        {application?.orderId}
+                        ID: {application?.orderId.slice(-8)}
                       </TableCell>
                       <TableCell>
-                        {application?.CompanyId?.Address?.City}
+                        {application?.userDetails?.Username}
                       </TableCell>
-                      <TableCell>{application?.Vendorname}</TableCell>
-                      <TableCell>{application.Email}</TableCell>
-                      <TableCell>{application?.paymentMode}</TableCell>
-                      <TableCell>{application?.Number}</TableCell>
+                      <TableCell>{application?.userDetails?.Email}</TableCell>
+                      <TableCell>
+                        {application?.shippingDetails?.City}
+                      </TableCell>
+                      <TableCell>{application?.products?.length}</TableCell>
                       <TableCell>{application?.payment?.paymentMode}</TableCell>
                       <TableCell>{application?.payment?.amount}</TableCell>
                       <TableCell>
                         <span
                           className={`font-medium ${
-                            application?.payment?.paymentStatus === "Pending"
-                               ? "text-amber-500"
-                              : application?.payment?.paymentStatus ==="Completed"
+                            application?.subOrderStatus === "Pending"
+                              ? "text-amber-500"
+                              : application?.subOrderStatus === "Completed"
                               ? "text-green-500"
-                              : application?.payment?.paymentStatus ==="Rejected"
+                              : application?.subOrderStatus === "Rejected"
                               ? "text-red-500"
                               : "text-gray-500"
                           }`}
                         >
-                          {application?.paymentStatus}
+                          {application?.subOrderStatus}
                         </span>
                       </TableCell>
                       <TableCell>
                         <span
-                          href="#"
-                          className="text-[#106C83] hover:underline font-medium"
-                        >
-                          View Details
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span
-                          href="#"
-                          className="text-[#106C83] hover:underline font-medium"
+                         onClick={()=>router.push(`/orders/Vieworder/${application?.orderId}`)}
+                          className="text-[#106C83] hover:underline font-medium cursor-pointer"
                         >
                           View Details
                         </span>
@@ -306,7 +242,7 @@ export default function Ordersmanagement() {
             )}
           </div>
 
-          {!loading && !error && data?.length > 0 && (
+          {!loading && !error && currentItems?.length > 0 && (
             <div className="flex justify-center mt-4">
               <Pagination>
                 <PaginationContent>

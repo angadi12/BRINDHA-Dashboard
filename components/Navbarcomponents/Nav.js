@@ -13,14 +13,14 @@ const Nav = () => {
         </p>
       </div>
 
-      <div className="flex items-center space-x-4">
+      {/* <div className="flex items-center space-x-4">
         <NotificationSheet />
 
         <div className="flex items-center">
           <span className="text-sm font-medium mr-1">En</span>
           <ChevronDown className="h-4 w-4 text-gray-600" />
         </div>
-      </div>
+      </div> */}
     </header>
   );
 };

@@ -41,7 +41,6 @@ export default function SellerProfile({ seller }) {
   );
   const data = analytics?.[id];
 
-  console.log(data);
 
   const dispatch = useDispatch();
 

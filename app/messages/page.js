@@ -18,97 +18,20 @@ import User from "@/public/Asset/User.png";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllTickets } from "@/lib/Redux/Slices/ticketSlice";
+import { Sendmessage } from "@/lib/API/Messages/Messages";
 
 export default function MessagingInterface() {
   const { tickets, loading, error } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
   const scrollRef = useRef(null);
 
-  useEffect(() => {
-    dispatch(fetchAllTickets(""));
-  }, [dispatch]);
-
-  // Sample data
-  // const contacts = [
-  //   {
-  //     id: "1",
-  //     name: "Arjun Mahadev",
-  //     avatar: "/placeholder.svg?height=50&width=50",
-  //     lastMessage: "Hi my name is arjun, I want to...",
-  //     lastMessageTime: "12:11 PM",
-  //     email: "arjunmaha@gmail.com",
-  //     phone: "+91 7839309837",
-  //     messages: [
-  //       {
-  //         id: "m1",
-  //         content: "Hi, I does elite sewing machine come with Table?",
-  //         sender: "user",
-  //         timestamp: "12:11 PM",
-  //       },
-  //       {
-  //         id: "m2",
-  //         content:
-  //           "No, we provide only the machine! If you want a table buy separately.",
-  //         sender: "agent",
-  //         timestamp: "12:11 PM",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Jennifer Wills",
-  //     avatar: "/placeholder.svg?height=50&width=50",
-  //     lastMessage: "Hi my name is sheela, I want to...",
-  //     lastMessageTime: "12:11 PM",
-  //     messages: [],
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "Medona Miller",
-  //     avatar: "/placeholder.svg?height=50&width=50",
-  //     lastMessage: "Hi my name is sheela, I want to...",
-  //     lastMessageTime: "12:11 PM",
-  //     messages: [],
-  //   },
-  //   {
-  //     id: "4",
-  //     name: "Emmy White",
-  //     avatar: "/placeholder.svg?height=50&width=50",
-  //     lastMessage: "Hi my name is sheela, I want to...",
-  //     lastMessageTime: "12:11 PM",
-  //     messages: [],
-  //   },
-  //   {
-  //     id: "5",
-  //     name: "Robert Carl",
-  //     avatar: "/placeholder.svg?height=50&width=50",
-  //     lastMessage: "Hi my name is sheela, I want to...",
-  //     lastMessageTime: "12:11 PM",
-  //     messages: [],
-  //   },
-  //   {
-  //     id: "6",
-  //     name: "Robert Carl",
-  //     avatar: "/placeholder.svg?height=50&width=50",
-  //     lastMessage: "Hi my name is sheela, I want to...",
-  //     lastMessageTime: "12:11 PM",
-  //     messages: [],
-  //   },
-  // ];
-
   const [selectedContact, setSelectedContact] = useState(null);
   const [newMessage, setNewMessage] = useState("");
-  const [activeTab, setActiveTab] = useState("customers");
+  const [activeTab, setActiveTab] = useState("User");
 
-  // const handleSendMessage = () => {
-  //   if (!newMessage.trim()) return;
-
-  //   // In a real app, you would send this to an API
-  //   console.log("Sending message:", newMessage);
-
-  //   // Clear the input
-  //   setNewMessage("");
-  // };
+  useEffect(() => {
+    dispatch(fetchAllTickets(activeTab));
+  }, [dispatch, activeTab]);
 
   const contacts = tickets?.map((ticket) => ({
     id: ticket._id,
@@ -122,7 +45,7 @@ export default function MessagingInterface() {
     messages: ticket.Message.map((msg) => ({
       id: msg._id,
       content: msg.msg,
-      sender: msg.user === "your_current_user_id" ? "user" : "agent", // Replace accordingly
+      sender: msg.user === "6800afc07f7c2467f521e9f5" ? "user" : "agent", // Replace accordingly
       timestamp: msg.date,
     })),
   }));
@@ -130,25 +53,67 @@ export default function MessagingInterface() {
   useEffect(() => {
     if (contacts?.length > 0 && !selectedContact) {
       setSelectedContact(contacts[0]);
-    }
+    } 
   }, [contacts]);
 
-  const handleSendMessage = () => {
+  // const handleSendMessage = () => {
+  //   if (!newMessage.trim()) return;
+
+  //   const newMsg = {
+  //     id: Date.now().toString(),
+  //     content: newMessage,
+  //     user: "6800afc07f7c2467f521e9f5",
+  //     timestamp: new Date().toLocaleTimeString(),
+  //   };
+
+  //   setSelectedContact((prev) => ({
+  //     ...prev,
+  //     messages: [...prev.messages, newMsg],
+  //   }));
+
+  //   setNewMessage("");
+  // };
+
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
-    const newMsg = {
-      id: Date.now().toString(),
-      content: newMessage,
-      role: "agent",
-      timestamp: new Date().toLocaleTimeString(),
+    const messageData = {
+      msg: newMessage,
+      date: new Date().toLocaleDateString(),
+      user: "6800afc07f7c2467f521e9f5", // Set the user ID accordingly
     };
 
-    setSelectedContact((prev) => ({
-      ...prev,
-      messages: [...prev.messages, newMsg],
-    }));
+    try {
+      const response = await Sendmessage(selectedContact.id, {
+        Message: messageData,
+      });
 
-    setNewMessage("");
+      if (response?.success) {
+        // If the API call is successful, update the selected contact with the new message
+        setSelectedContact((prev) => ({
+          ...prev,
+          messages: [
+            ...prev.messages,
+            {
+              id: Date.now().toString(),
+              content: newMessage,
+              sender: "user",
+              timestamp: new Date().toLocaleTimeString(),
+            },
+          ],
+        }));
+
+        setNewMessage(""); // Clear the input field after sending the message
+      } else {
+        // Handle API failure (you could show an error message to the user)
+        console.error(
+          "Failed to send message:",
+          response?.message || "Unknown error"
+        );
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
   console.log(contacts);
@@ -212,13 +177,13 @@ export default function MessagingInterface() {
             {/* Left Sidebar */}
             <div className="w-1/3 border-r flex flex-col h-full">
               {/* Tabs */}
-              <Tabs defaultValue="customers" className="w-full">
+              <Tabs defaultValue="User" className="w-full">
                 <TabsList className="grid grid-cols-2 h-auto p-0 w-full">
                   <TabsTrigger
-                    value="customers"
-                    onClick={() => setActiveTab("customers")}
+                    value="User"
+                    onClick={() => setActiveTab("User")}
                     className={`rounded-none py-2 cursor-pointer ${
-                      activeTab === "customers"
+                      activeTab === "User"
                         ? " text-[#106C83] focus:bg-[#106C83]"
                         : "bg-white text-black"
                     }`}
@@ -226,61 +191,72 @@ export default function MessagingInterface() {
                     Customers
                   </TabsTrigger>
                   <TabsTrigger
-                    value="sellers"
-                    onClick={() => setActiveTab("sellers")}
+                    value="Vendor"
+                    onClick={() => setActiveTab("Vendor")}
                     className={`rounded-none py-2 cursor-pointer ${
-                      activeTab === "sellers"
+                      activeTab === "Vendor"
                         ? " text-[#106C83] focus:bg-[#106C83]"
                         : "bg-white text-black"
                     }`}
                   >
                     Sellers
                   </TabsTrigger>
-                
                 </TabsList>
               </Tabs>
 
               {/* Contact List */}
-              <ScrollArea className="flex-grow overflow-y-auto pb-12">
-                {contacts?.map((contact) => (
-                  <div
-                    key={contact?.id}
-                    className={`flex items-center p-4 cursor-pointer ${
-                      selectedContact?.id === contact?.id
-                        ? "bg-[#106C83] text-white"
-                        : ""
-                    }`}
-                    onClick={() => setSelectedContact(contact)}
-                  >
-                    <div className="w-12 h-12 rounded-full overflow-hidden mr-3">
-                      {/* <Image
+              {loading ? (
+                <div className="flex justify-center items-center h-full">
+                  <span className="loader2"></span>
+                </div>
+              ) : (
+                <ScrollArea className="flex-grow overflow-y-auto pb-12">
+                  {contacts.length > 0 ? (
+                    contacts?.map((contact) => (
+                      <div
+                        key={contact?.id}
+                        className={`flex items-center p-4 cursor-pointer ${
+                          selectedContact?.id === contact?.id
+                            ? "bg-[#106C83] text-white"
+                            : ""
+                        }`}
+                        onClick={() => setSelectedContact(contact)}
+                      >
+                        <div className="w-12 h-12 rounded-full overflow-hidden mr-3">
+                          {/* <Image
                         src={User}
                         alt={contact.name}
                         width={48}
                         height={48}
                         className="object-cover"
                       /> */}
-                    </div>
-                    <div className="flex-grow">
-                      <div className="flex justify-between">
-                        <h3 className="font-medium">{contact?.name}</h3>
-                        <span className="text-xs">
-                          {contact?.lastMessageTime}
-                        </span>
+                        </div>
+                        <div className="flex-grow">
+                          <div className="flex justify-between">
+                            <h3 className="font-medium">{contact?.name}</h3>
+                            <span className="text-xs">
+                              {contact?.lastMessageTime}
+                            </span>
+                          </div>
+                          <p
+                            className={`text-sm truncate ${
+                              selectedContact?.id === contact?.id
+                                ? "text-white/80"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            {contact?.lastMessage}
+                          </p>
+                        </div>
                       </div>
-                      <p
-                        className={`text-sm truncate ${
-                          selectedContact?.id === contact?.id
-                            ? "text-white/80"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        {contact?.lastMessage}
-                      </p>
+                    ))
+                  ) : (
+                    <div className="flex justify-center items-center mt-12">
+                      <span>No Messages</span>
                     </div>
-                  </div>
-                ))}
-              </ScrollArea>
+                  )}
+                </ScrollArea>
+              )}
             </div>
 
             {/* Right Chat Area */}

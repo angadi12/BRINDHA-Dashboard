@@ -43,7 +43,7 @@ export default function SellersManagement() {
   const [sortValue, setSortValue] = useState("sort-by");
   const [profileTab, setProfileTab] = useState("all");
   const [Tab, setTab] = useState("applications");
-
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const router = useRouter();
@@ -56,10 +56,9 @@ export default function SellersManagement() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllSellars(profileTab));
-  }, [dispatch, profileTab, selectedValue, sortValue, Tab]);
+  }, [dispatch, profileTab, selectedValue, sortValue, Tab,searchQuery]);
 
   const handleSelectChange = (value) => {
-    console.log(value);
     setSelectedValue(value);
     filterAndSortData(value, sortValue);
   };
@@ -76,72 +75,155 @@ export default function SellersManagement() {
     return new Date(utcDate.getTime() + istOffset);
   };
 
-  const filterAndSortData = (period, sortBy) => {
-    const now = new Date();
-    const currentIST = convertToIST(now);
-    const currentMonth = currentIST.getMonth();
-    const currentYear = currentIST.getFullYear();
+  // const filterAndSortData = (period, sortBy) => {
+  //   const now = new Date();
+  //   const currentIST = convertToIST(now);
+  //   const currentMonth = currentIST.getMonth();
+  //   const currentYear = currentIST.getFullYear();
 
-    const filtered = data.filter((item) => {
-      const createdAtIST = convertToIST(item.createdAt);
-      const updatedAtIST = convertToIST(item.updatedAt);
+  //   const filtered = data.filter((item) => {
+  //     const createdAtIST = convertToIST(item.createdAt);
+  //     const updatedAtIST = convertToIST(item.updatedAt);
 
-      if (period === "this-month") {
-        const createdInThisMonth =
-          createdAtIST.getMonth() === currentMonth &&
-          createdAtIST.getFullYear() === currentYear;
+  //     if (period === "this-month") {
+  //       const createdInThisMonth =
+  //         createdAtIST.getMonth() === currentMonth &&
+  //         createdAtIST.getFullYear() === currentYear;
 
-        const updatedInThisMonth =
-          updatedAtIST.getMonth() === currentMonth &&
-          updatedAtIST.getFullYear() === currentYear;
+  //       const updatedInThisMonth =
+  //         updatedAtIST.getMonth() === currentMonth &&
+  //         updatedAtIST.getFullYear() === currentYear;
 
-        return createdInThisMonth || updatedInThisMonth;
+  //       return createdInThisMonth || updatedInThisMonth;
+  //     }
+
+  //     if (period === "this-week") {
+  //       const startOfWeek = new Date(currentIST);
+  //       startOfWeek.setDate(currentIST.getDate() - currentIST.getDay());
+  //       startOfWeek.setHours(0, 0, 0, 0);
+
+  //       return createdAtIST >= startOfWeek || updatedAtIST >= startOfWeek;
+  //     }
+
+  //     if (period === "this-year") {
+  //       return (
+  //         createdAtIST.getFullYear() === currentYear ||
+  //         updatedAtIST.getFullYear() === currentYear
+  //       );
+  //     }
+
+  //     return true;
+  //   });
+
+  //   const sortedData = sortData(filtered, sortBy);
+  //   setFilteredData(sortedData);
+  // };
+
+  // const sortData = (data, sortBy) => {
+  //   switch (sortBy) {
+  //     case "name-asc":
+  //       return data?.sort((a, b) =>
+  //         (a?.BusinessName || "").localeCompare(b?.BusinessName || "")
+  //       );
+  //     case "name-desc":
+  //       return data?.sort((a, b) =>
+  //         (b?.BusinessName || "").localeCompare(a?.BusinessName || "")
+  //       );
+  //     case "rating-high":
+  //       return data?.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  //     case "rating-low":
+  //       return data?.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+  //     default:
+  //       return data;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   filterAndSortData(selectedValue, sortValue);
+  // }, [selectedValue, sortValue, data]);
+
+const filterAndSortData = (period, sortBy) => {
+  const now = new Date();
+  const currentIST = convertToIST(now);
+  const currentMonth = currentIST.getMonth();
+  const currentYear = currentIST.getFullYear();
+
+  const filtered = data.filter((item) => {
+    const createdAtIST = convertToIST(item.createdAt);
+    const updatedAtIST = convertToIST(item.updatedAt);
+
+    // Filter based on period (this-month, this-week, this-year)
+    if (period === "this-month") {
+      const createdInThisMonth =
+        createdAtIST.getMonth() === currentMonth &&
+        createdAtIST.getFullYear() === currentYear;
+
+      const updatedInThisMonth =
+        updatedAtIST.getMonth() === currentMonth &&
+        updatedAtIST.getFullYear() === currentYear;
+
+      if (!(createdInThisMonth || updatedInThisMonth)) {
+        return false;
       }
-
-      if (period === "this-week") {
-        const startOfWeek = new Date(currentIST);
-        startOfWeek.setDate(currentIST.getDate() - currentIST.getDay());
-        startOfWeek.setHours(0, 0, 0, 0);
-
-        return createdAtIST >= startOfWeek || updatedAtIST >= startOfWeek;
-      }
-
-      if (period === "this-year") {
-        return (
-          createdAtIST.getFullYear() === currentYear ||
-          updatedAtIST.getFullYear() === currentYear
-        );
-      }
-
-      return true;
-    });
-
-    const sortedData = sortData(filtered, sortBy);
-    setFilteredData(sortedData);
-  };
-
-  const sortData = (data, sortBy) => {
-    switch (sortBy) {
-      case "name-asc":
-        return data?.sort((a, b) =>
-          (a?.BusinessName || "").localeCompare(b?.BusinessName || "")
-        );
-      case "name-desc":
-        return data?.sort((a, b) =>
-          (b?.BusinessName || "").localeCompare(a?.BusinessName || "")
-        );
-      case "rating-high":
-        return data?.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-      case "rating-low":
-        return data?.sort((a, b) => (a.rating || 0) - (b.rating || 0));
-      default:
-        return data;
     }
-  };
 
-  useEffect(() => {
-    filterAndSortData(selectedValue, sortValue);
-  }, [selectedValue, sortValue, data]);
+    if (period === "this-week") {
+      const startOfWeek = new Date(currentIST);
+      startOfWeek.setDate(currentIST.getDate() - currentIST.getDay());
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      if (!(createdAtIST >= startOfWeek || updatedAtIST >= startOfWeek)) {
+        return false;
+      }
+    }
+
+    if (period === "this-year") {
+      if (!(createdAtIST.getFullYear() === currentYear || updatedAtIST.getFullYear() === currentYear)) {
+        return false;
+      }
+    }
+
+    return true; 
+  });
+
+  // Sort the filtered data
+  const sortedData = sortData(filtered, sortBy);
+  setFilteredData(sortedData);
+};
+
+const sortData = (data, sortBy) => {
+  switch (sortBy) {
+    case "name-asc":
+      return data?.sort((a, b) =>
+        (a?.BusinessName || "").localeCompare(b?.BusinessName || "")
+      );
+    case "name-desc":
+      return data?.sort((a, b) =>
+        (b?.BusinessName || "").localeCompare(a?.BusinessName || "")
+      );
+    case "rating-high":
+      return data?.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    case "rating-low":
+      return data?.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+    default:
+      return data;
+  }
+};
+
+useEffect(() => {
+  filterAndSortData(selectedValue, sortValue); 
+}, [selectedValue, sortValue, data]);
+
+const sellers = Array.isArray(data) ? data : [];
+
+  // Filter the sellers based on searchQuery
+  const filteredSellers = sellers.filter((item) => {
+    if (!item?.BussinessName) return false;
+    return item.BussinessName.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+console.log(filteredSellers)
+
 
   const handletabchange = (value) => {
     setTab(value);
@@ -154,6 +236,10 @@ export default function SellersManagement() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
   };
 
   return (
@@ -402,6 +488,13 @@ export default function SellersManagement() {
           <div className="flex justify-between items-center mb-2">
             <div className="w-full"></div>
             <div className="flex items-center gap-2 ml-4 shrink-0">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search Name"
+                className="border h-9 p-2 rounded-md w-60"
+              />
               <Select value={sortValue} onValueChange={handleSortChange}>
                 <SelectTrigger className="w-[130px] border-gray-200 bg-white text-sm">
                   <SelectValue placeholder="Sort By" />
@@ -427,13 +520,13 @@ export default function SellersManagement() {
               <div className="flex items-center justify-center py-10 text-red-500">
                 {error}
               </div>
-            ) : data?.length === 0 ? (
+            ) : filteredSellers?.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 No seller applications available
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {data?.map((seller, index) => (
+                {filteredSellers?.map((seller, index) => (
                   <Card
                     key={index}
                     className="border border-gray-200 rounded-lg overflow-hidden p-3"

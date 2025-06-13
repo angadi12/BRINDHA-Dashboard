@@ -148,7 +148,7 @@ export default function SellerApplicationsTable() {
                                 `/product-seller/profile/${application?._id}`
                               )
                             }
-                            className="text-[#106C83] hover:underline font-medium"
+                            className="text-[#106C83] hover:underline cursor-pointer font-medium"
                           >
                             View Profile
                           </span>
