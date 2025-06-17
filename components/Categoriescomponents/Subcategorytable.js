@@ -46,8 +46,10 @@ import {
 } from "@/components/ui/select";
 import { Uploadfile } from "@/lib/API/Fileupload/Singlefile";
 import { Createsubcategory } from "@/lib/API/Master/Master";
+import { useToast } from "@/components/ui/toast-provider";
 
 export function Subcategorytable() {
+    const { addToast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     categoryName: "",

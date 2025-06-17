@@ -178,14 +178,14 @@ export default function MessagingInterface() {
             <div className="w-1/3 border-r flex flex-col h-full">
               {/* Tabs */}
               <Tabs defaultValue="User" className="w-full">
-                <TabsList className="grid grid-cols-2 h-auto p-0 w-full">
+                <TabsList className="grid grid-cols-2 gap-1 h-auto p-0 w-full border">
                   <TabsTrigger
                     value="User"
                     onClick={() => setActiveTab("User")}
-                    className={`rounded-none py-2 cursor-pointer ${
+                    className={`rounded-none py-2 cursor-pointer border ${
                       activeTab === "User"
-                        ? " text-[#106C83] focus:bg-[#106C83]"
-                        : "bg-white text-black"
+                        ? " text-[#106C83] focus:bg-[#106C83]  ring-1 ring-[#106C83]"
+                        : "bg-white text-black "
                     }`}
                   >
                     Customers
@@ -195,7 +195,7 @@ export default function MessagingInterface() {
                     onClick={() => setActiveTab("Vendor")}
                     className={`rounded-none py-2 cursor-pointer ${
                       activeTab === "Vendor"
-                        ? " text-[#106C83] focus:bg-[#106C83]"
+                        ? " text-[#106C83] focus:bg-[#106C83]  ring-1 ring-[#106C83]"
                         : "bg-white text-black"
                     }`}
                   >

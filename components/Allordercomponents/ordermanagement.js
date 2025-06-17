@@ -37,25 +37,42 @@ import { fetchAllorders } from "@/lib/Redux/Slices/orderSlice";
 import { useRouter } from "next/navigation";
 
 export default function Ordersmanagement() {
-  const [profileTab, setProfileTab] = useState("all");
+  const [profileTab, setProfileTab] = useState("Delivered");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const router = useRouter();
   const { data, loading, error } = useSelector((state) => state.order);
   const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    dispatch(fetchAllorders({ page: 1, limit: 10 }));
+    dispatch(fetchAllorders({ page: 1, limit: 10, status: profileTab }));
   }, [dispatch, profileTab]);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data?.slice(indexOfFirstItem, indexOfLastItem) || [];
-  const totalPages = Math.ceil((data?.length || 0) / itemsPerPage);
+ const filteredData = data?.filter((order) =>
+  order?.userDetails?.Username?.toLowerCase().includes(searchQuery.toLowerCase())
+);
+
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem) || [];
+const totalPages = Math.ceil((filteredData?.length || 0) / itemsPerPage);
+
+useEffect(() => {
+  setCurrentPage(1);
+}, [searchQuery]);
+
+
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+
 
   return (
     <div className="w-full rounded-lg border h-full bg-white p-4">
@@ -68,18 +85,6 @@ export default function Ordersmanagement() {
           >
             All Orders
           </TabsTrigger>
-          {/* <TabsTrigger
-            value="active"
-            className="rounded-md px-6 py-2 text-base font-medium data-[state=active]:bg-[#106C83] data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-gray-300 data-[state=inactive]:text-gray-700 data-[state=inactive]:hover:bg-gray-50"
-          >
-            Product Orders
-          </TabsTrigger>
-          <TabsTrigger
-            value="Services"
-            className="rounded-md px-6 py-2 text-base font-medium data-[state=active]:bg-[#106C83] data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-gray-300 data-[state=inactive]:text-gray-700 data-[state=inactive]:hover:bg-gray-50"
-          >
-            Service Orders
-          </TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="all">
@@ -88,19 +93,19 @@ export default function Ordersmanagement() {
             <div className="border-b border-gray-200 w-full">
               <div className="flex -mb-px">
                 <button
-                  onClick={() => setProfileTab("all")}
+                  onClick={() => setProfileTab("Delivered")}
                   className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "all"
+                    profileTab === "Delivered"
                       ? "border-b-2 border-[#106C83] text-[#106C83]"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  All Product Orders
+                  Delivered
                 </button>
                 <button
-                  onClick={() => setProfileTab("pending")}
+                  onClick={() => setProfileTab("Pending")}
                   className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "pending"
+                    profileTab === "Pending"
                       ? "border-b-2 border-[#106C83] text-[#106C83]"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
@@ -108,19 +113,19 @@ export default function Ordersmanagement() {
                   Pending Orders
                 </button>
                 <button
-                  onClick={() => setProfileTab("rejected")}
+                  onClick={() => setProfileTab("Processing")}
                   className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "rejected"
+                    profileTab === "Processing"
                       ? "border-b-2 border-[#106C83] text-[#106C83]"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  Completed Orders
+                  Processing Orders
                 </button>
                 <button
-                  onClick={() => setProfileTab("blacklisted")}
+                  onClick={() => setProfileTab("Cancelled")}
                   className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "blacklisted"
+                    profileTab === "Cancelled"
                       ? "border-b-2 border-[#106C83] text-[#106C83]"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
@@ -129,7 +134,7 @@ export default function Ordersmanagement() {
                 </button>
               </div>
             </div>
-            <div className="flex items-center gap-2 ml-4 shrink-0">
+            {/* <div className="flex items-center gap-2 ml-4 shrink-0">
               <Select defaultValue="this-week">
                 <SelectTrigger className="w-[130px] border-gray-200 bg-white text-sm">
                   <SelectValue placeholder="This Week" />
@@ -140,6 +145,15 @@ export default function Ordersmanagement() {
                   <SelectItem value="this-year">This Year</SelectItem>
                 </SelectContent>
               </Select>
+            </div> */}
+            <div className="flex items-center gap-2 ml-4 shrink-0">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search Customer Name"
+                className="border h-9 p-2 rounded-md w-60"
+              />
             </div>
           </div>
 
@@ -155,7 +169,7 @@ export default function Ordersmanagement() {
               </div>
             ) : currentItems?.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
-                No seller applications available
+                No Data available
               </div>
             ) : (
               <Table>
@@ -217,9 +231,11 @@ export default function Ordersmanagement() {
                           className={`font-medium ${
                             application?.subOrderStatus === "Pending"
                               ? "text-amber-500"
-                              : application?.subOrderStatus === "Completed"
+                              : application?.subOrderStatus === "Delivered"
                               ? "text-green-500"
-                              : application?.subOrderStatus === "Rejected"
+                              : application?.subOrderStatus === "Processing"
+                              ? "text-yellow-500"
+                              : application?.subOrderStatus === "Cancelled"
                               ? "text-red-500"
                               : "text-gray-500"
                           }`}
@@ -229,7 +245,11 @@ export default function Ordersmanagement() {
                       </TableCell>
                       <TableCell>
                         <span
-                         onClick={()=>router.push(`/orders/Vieworder/${application?.orderId}`)}
+                          onClick={() =>
+                            router.push(
+                              `/orders/Vieworder/${application?.orderId}`
+                            )
+                          }
                           className="text-[#106C83] hover:underline font-medium cursor-pointer"
                         >
                           View Details
@@ -290,432 +310,7 @@ export default function Ordersmanagement() {
             </div>
           )}
         </TabsContent>
-        <TabsContent value="active">
-          {/* Profile Tabs and Filters */}
-          <div className="flex justify-between items-center mb-4">
-            <div className="border-b border-gray-200 w-full">
-              <div className="flex -mb-px">
-                <button
-                  onClick={() => setProfileTab("all")}
-                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "all"
-                      ? "border-b-2 border-[#106C83] text-[#106C83]"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  All Product Orders
-                </button>
-                <button
-                  onClick={() => setProfileTab("pending")}
-                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "pending"
-                      ? "border-b-2 border-[#106C83] text-[#106C83]"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Pending Orders
-                </button>
-                <button
-                  onClick={() => setProfileTab("rejected")}
-                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "rejected"
-                      ? "border-b-2 border-[#106C83] text-[#106C83]"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Completed Orders
-                </button>
-                <button
-                  onClick={() => setProfileTab("blacklisted")}
-                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "blacklisted"
-                      ? "border-b-2 border-[#106C83] text-[#106C83]"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Canceled Orders
-                </button>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 ml-4 shrink-0">
-              <Select defaultValue="this-week">
-                <SelectTrigger className="w-[130px] border-gray-200 bg-white text-sm">
-                  <SelectValue placeholder="This Week" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="this-week">This Week</SelectItem>
-                  <SelectItem value="this-month">This Month</SelectItem>
-                  <SelectItem value="this-year">This Year</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="icon" className="border-gray-200">
-                <Filter className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Table */}
-          <div className=" rounded-md">
-            {loading ? (
-              <div className="flex items-center justify-center py-10 text-gray-500">
-                <span className="loader2 " />
-              </div>
-            ) : error ? (
-              <div className="flex items-center justify-center py-10 text-red-500">
-                {error}
-              </div>
-            ) : data?.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                No seller applications available
-              </div>
-            ) : (
-              <Table>
-                <TableHeader className="bg-gray-50 border border-gray-300 rounded-md">
-                  <TableRow className="">
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      Order id.
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      date
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      customer name
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      EMAIL ID
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      location
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      Items
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      amount
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      status
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      Actions
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data?.map((application, index) => (
-                    <TableRow
-                      key={index}
-                      className="border-b border-gray-200 h-12"
-                    >
-                      <TableCell className="font-medium">
-                        {application?.BussinessName}
-                      </TableCell>
-                      <TableCell>
-                        {application?.CompanyId?.Address?.City}
-                      </TableCell>
-                      <TableCell>{application?.Vendorname}</TableCell>
-                      <TableCell>{application.Email}</TableCell>
-                      <TableCell>{application?.Number}</TableCell>
-                      <TableCell>{application.registrationDate}</TableCell>
-                      <TableCell>
-                        <span
-                          className={`font-medium ${
-                            application.isCompanyVerified === "Pending"
-                              ? "text-amber-500"
-                              : application.isCompanyVerified === "Approved"
-                              ? "text-green-500"
-                              : application.isCompanyVerified === "Rejected"
-                              ? "text-red-500"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {application.isCompanyVerified}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span
-                          href="#"
-                          className="text-[#106C83] hover:underline font-medium"
-                        >
-                          View Details
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span
-                          href="#"
-                          className="text-[#106C83] hover:underline font-medium"
-                        >
-                          View Details
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </div>
-
-          {!loading && !error && data?.length > 0 && (
-            <div className="flex justify-center mt-4">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        handlePageChange(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          onClick={() => handlePageChange(page)}
-                          isActive={currentPage === page}
-                          className="cursor-pointer"
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    )
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        handlePageChange(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
-        </TabsContent>
-        <TabsContent value="Services">
-          {/* Profile Tabs and Filters */}
-          <div className="flex justify-between items-center mb-4">
-            <div className="border-b border-gray-200 w-full">
-              <div className="flex -mb-px">
-                <button
-                  onClick={() => setProfileTab("all")}
-                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "all"
-                      ? "border-b-2 border-[#106C83] text-[#106C83]"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  All Product Orders
-                </button>
-                <button
-                  onClick={() => setProfileTab("pending")}
-                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "pending"
-                      ? "border-b-2 border-[#106C83] text-[#106C83]"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Pending Orders
-                </button>
-                <button
-                  onClick={() => setProfileTab("rejected")}
-                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "rejected"
-                      ? "border-b-2 border-[#106C83] text-[#106C83]"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Completed Orders
-                </button>
-                <button
-                  onClick={() => setProfileTab("blacklisted")}
-                  className={`mr-8 py-4 text-sm font-medium cursor-pointer ${
-                    profileTab === "blacklisted"
-                      ? "border-b-2 border-[#106C83] text-[#106C83]"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Canceled Orders
-                </button>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 ml-4 shrink-0">
-              <Select defaultValue="this-week">
-                <SelectTrigger className="w-[130px] border-gray-200 bg-white text-sm">
-                  <SelectValue placeholder="This Week" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="this-week">This Week</SelectItem>
-                  <SelectItem value="this-month">This Month</SelectItem>
-                  <SelectItem value="this-year">This Year</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="icon" className="border-gray-200">
-                <Filter className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Table */}
-          <div className=" rounded-md">
-            {loading ? (
-              <div className="flex items-center justify-center py-10 text-gray-500">
-                <span className="loader2 " />
-              </div>
-            ) : error ? (
-              <div className="flex items-center justify-center py-10 text-red-500">
-                {error}
-              </div>
-            ) : data?.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                No seller applications available
-              </div>
-            ) : (
-              <Table>
-                <TableHeader className="bg-gray-50 border border-gray-300 rounded-md">
-                  <TableRow className="">
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      Order id.
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      date
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      customer name
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      EMAIL ID
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      location
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      Items
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      amount
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      status
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500 uppercase">
-                      Actions
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data?.map((application, index) => (
-                    <TableRow
-                      key={index}
-                      className="border-b border-gray-200 h-12"
-                    >
-                      <TableCell className="font-medium">
-                        {application?.BussinessName}
-                      </TableCell>
-                      <TableCell>
-                        {application?.CompanyId?.Address?.City}
-                      </TableCell>
-                      <TableCell>{application?.Vendorname}</TableCell>
-                      <TableCell>{application.Email}</TableCell>
-                      <TableCell>{application?.Number}</TableCell>
-                      <TableCell>{application.registrationDate}</TableCell>
-                      <TableCell>
-                        <span
-                          className={`font-medium ${
-                            application.isCompanyVerified === "Pending"
-                              ? "text-amber-500"
-                              : application.isCompanyVerified === "Approved"
-                              ? "text-green-500"
-                              : application.isCompanyVerified === "Rejected"
-                              ? "text-red-500"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {application.isCompanyVerified}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span
-                          href="#"
-                          className="text-[#106C83] hover:underline font-medium"
-                        >
-                          View Details
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span
-                          href="#"
-                          className="text-[#106C83] hover:underline font-medium"
-                        >
-                          View Details
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </div>
-
-          {!loading && !error && data?.length > 0 && (
-            <div className="flex justify-center mt-4">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        handlePageChange(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          onClick={() => handlePageChange(page)}
-                          isActive={currentPage === page}
-                          className="cursor-pointer"
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    )
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        handlePageChange(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
-        </TabsContent>
+      
       </Tabs>
     </div>
   );

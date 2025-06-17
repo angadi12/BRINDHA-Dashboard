@@ -38,21 +38,21 @@ export default function PendingTransactionPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-2">
             <ChevronLeft className="w-5 h-5 text-gray-600" />
-            <h1 className="text-lg font-medium text-gray-900">Pending Transaction</h1>
+            <h1 className="text-sm font-medium text-gray-900">Pending Transaction</h1>
           </div>
-          <button className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-md font-medium">Pay All</button>
+          <button className="bg-[#106C83] hover:bg-[#106C83] text-white px-6 py-2 rounded-md font-medium">Pay All</button>
         </div>
 
         {/* Content Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white rounded-lg  border border-gray-200">
           {/* Section Header */}
           <div className="flex justify-between items-center p-6 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Product Wise Breakdown</h2>
+            <h2 className="text-sm font-medium text-gray-900">Product Wise Breakdown</h2>
             <div className="flex items-center gap-2 text-gray-600 cursor-pointer">
               <span>This Week</span>
               <ChevronDown className="w-4 h-4" />
@@ -63,7 +63,7 @@ export default function PendingTransactionPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50">
+                <tr className="bg-gray-50 border">
                   <th className="text-left py-4 px-6 text-sm font-medium text-gray-500 uppercase tracking-wider">
                     ORDER ID
                   </th>

@@ -36,9 +36,8 @@ export default function SellerDashboard() {
     pendingpayoutloading,
     paidpayoutloading,
     pendingpayouterror,
-    paidpayouterror
+    paidpayouterror,
   } = useSelector((state) => state.revenue);
-
 
   const [activeTab, setActiveTab] = useState("completed");
 
@@ -49,6 +48,8 @@ export default function SellerDashboard() {
       dispatch(FetchAllpendingpayout());
     }
   }, [activeTab, dispatch]);
+
+  console.log(paidpayout);
 
   return (
     <ScrollArea className="w-full bg-gray-50 mx-auto pb-14 h-screen">
@@ -114,9 +115,9 @@ export default function SellerDashboard() {
                     <TableHeader className="bg-gray-100 border border-gray-300">
                       <TableRow className="bg-gray-50">
                         <TableHead>CLIENT NAME</TableHead>
-                        <TableHead>ORDER ID</TableHead>
-                        <TableHead>DATE</TableHead>
-                        <TableHead>PAYMENT METHOD</TableHead>
+                        <TableHead>PHONE NO</TableHead>
+                        <TableHead>EMAIL</TableHead>
+                        {/* <TableHead>PAYMENT METHOD</TableHead> */}
                         <TableHead>AMOUNT</TableHead>
                         <TableHead>COMMISSION</TableHead>
                         <TableHead>STATUS</TableHead>
@@ -129,10 +130,14 @@ export default function SellerDashboard() {
                           key={index}
                           className="border-t border-gray-200 h-14"
                         >
-                          <TableCell>{transaction?.vendorId?.Vendorname}</TableCell>
-                          <TableCell>{transaction.orderId}</TableCell>
-                          <TableCell>{transaction.date}</TableCell>
-                          <TableCell>{transaction.paymentMethod}</TableCell>
+                          <TableCell>
+                            {transaction?.vendorId?.BussinessName}
+                          </TableCell>
+                          <TableCell>{transaction?.vendorId?.Number}</TableCell>
+                          <TableCell>{transaction?.vendorId?.Email}</TableCell>
+                          {/* <TableCell>
+                            {transaction?.payments?.paymentMode}
+                          </TableCell> */}
                           <TableCell>{transaction?.totalAmount}</TableCell>
                           <TableCell>{transaction.commission}</TableCell>
                           <TableCell className="text-green-500">
@@ -140,10 +145,10 @@ export default function SellerDashboard() {
                           </TableCell>
                           <TableCell>
                             <Link
-                              href="#"
+                              href={`/revenue/Viewbreakdown/${transaction?._id}`}
                               className="text-[#106C83] hover:underline"
                             >
-                              View Invoice
+                              View Breakdown
                             </Link>
                           </TableCell>
                         </TableRow>
@@ -170,11 +175,11 @@ export default function SellerDashboard() {
                     <TableHeader className="bg-gray-100 border border-gray-300">
                       <TableRow className="bg-gray-50">
                         <TableHead>CLIENT NAME</TableHead>
-                        <TableHead>ORDER ID</TableHead>
-                        <TableHead>DATE</TableHead>
-                        <TableHead>PAYMENT METHOD</TableHead>
+                        <TableHead>Ph No.</TableHead>
+                        <TableHead>EMAIL</TableHead>
+                        {/* <TableHead>PAYMENT METHOD</TableHead> */}
+                        <TableHead>TOTAL ORDERS</TableHead>
                         <TableHead>AMOUNT</TableHead>
-                        <TableHead>COMMISSION</TableHead>
                         <TableHead>STATUS</TableHead>
                         <TableHead>ACTIONS</TableHead>
                       </TableRow>
@@ -185,18 +190,22 @@ export default function SellerDashboard() {
                           key={index}
                           className="border-t border-gray-200 h-14"
                         >
-                          <TableCell>{transaction.clientName}</TableCell>
-                          <TableCell>{transaction.orderId}</TableCell>
-                          <TableCell>{transaction.date}</TableCell>
-                          <TableCell>{transaction.paymentMethod}</TableCell>
-                          <TableCell>{transaction?.totalPayoutAmount}</TableCell>
-                          <TableCell>{transaction.commission}</TableCell>
+                          <TableCell>
+                            {transaction?.vendor?.Vendorname}
+                          </TableCell>
+                          <TableCell>{transaction?.vendor?.Number}</TableCell>
+                          <TableCell>{transaction?.vendor?.Email}</TableCell>
+                          {/* <TableCell>{transaction.paymentMethod}</TableCell> */}
+                          <TableCell>{transaction?.totalOrdersCount}</TableCell>
+                          <TableCell>
+                            {transaction?.totalPayoutAmount}
+                          </TableCell>
                           <TableCell className="text-yellow-500">
                             Pending
                           </TableCell>
                           <TableCell>
                             <Link
-                              href="#"
+                              href={`/revenue/Viewbreakdown/${transaction?.vendorId}`}
                               className="text-[#106C83] hover:underline"
                             >
                               View Breakdown
