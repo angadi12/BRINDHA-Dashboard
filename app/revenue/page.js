@@ -90,9 +90,7 @@ export default function SellerDashboard() {
                   <SelectItem value="custom">Custom Range</SelectItem>
                 </SelectContent>
               </Select>
-              <Button className="bg-[#106C83] hover:bg-[#106C83] text-sm">
-                Withdraw
-              </Button>
+             
             </div>
           </div>
 

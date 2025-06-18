@@ -101,13 +101,13 @@ export default function SellerDocProfile() {
                     <div className="flex items-center text-sm">
                       <Mail className="h-4 w-4 text-gray-500 mr-2 shrink-0" />
                       <span className="text-gray-700">
-                        {profile?.CompanyId?.BussinessEmail}
+                        {profile?.Email}
                       </span>
                     </div>
                     <div className="flex items-center text-sm">
                       <Phone className="h-4 w-4 text-gray-500 mr-2 shrink-0" />
                       <span className="text-gray-700">
-                        {profile?.CompanyId?.BussinessNumber}
+                        {profile?.Number}
                       </span>
                     </div>
                   </div>

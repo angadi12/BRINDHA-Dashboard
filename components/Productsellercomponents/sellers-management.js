@@ -392,7 +392,7 @@ console.log(filteredSellers)
                         <Badge
                           className={`font-medium ${
                             application.isCompanyVerified === "Pending"
-                              ? "text-amber-500"
+                              ? "text-amber-500 bg-amber-50 border-amber-300"
                               : application.isCompanyVerified === "Approved"
                               ? "text-green-500 border-green-200 bg-green-50"
                               : application.isCompanyVerified === "Rejected"

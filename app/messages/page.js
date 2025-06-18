@@ -28,7 +28,7 @@ export default function MessagingInterface() {
   const [selectedContact, setSelectedContact] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [activeTab, setActiveTab] = useState("User");
-
+  const [sending, Setsending] = useState(false);
   useEffect(() => {
     dispatch(fetchAllTickets(activeTab));
   }, [dispatch, activeTab]);
@@ -53,7 +53,7 @@ export default function MessagingInterface() {
   useEffect(() => {
     if (contacts?.length > 0 && !selectedContact) {
       setSelectedContact(contacts[0]);
-    } 
+    }
   }, [contacts]);
 
   // const handleSendMessage = () => {
@@ -80,9 +80,9 @@ export default function MessagingInterface() {
     const messageData = {
       msg: newMessage,
       date: new Date().toLocaleDateString(),
-      user: "6800afc07f7c2467f521e9f5", // Set the user ID accordingly
+      user: "6800afc07f7c2467f521e9f5",
     };
-
+    Setsending(true);
     try {
       const response = await Sendmessage(selectedContact.id, {
         Message: messageData,
@@ -104,19 +104,28 @@ export default function MessagingInterface() {
         }));
 
         setNewMessage(""); // Clear the input field after sending the message
+        Setsending(false);
+        dispatch(fetchAllTickets(activeTab));
       } else {
-        // Handle API failure (you could show an error message to the user)
-        console.error(
-          "Failed to send message:",
-          response?.message || "Unknown error"
-        );
+        Setsending(false);
+        addToast({
+          title: `Failed to send message`,
+          description: response?.message,
+          variant: "destructive",
+          duration: 5000,
+        });
       }
     } catch (error) {
-      console.error("Error sending message:", error);
+      Setsending(false);
+      addToast({
+        title: `Failed to send message`,
+        description: error,
+        variant: "destructive",
+        duration: 5000,
+      });
     }
   };
 
-  console.log(contacts);
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -168,9 +177,6 @@ export default function MessagingInterface() {
           {/* Messages Header */}
           <div className="flex justify-between items-center p-2 border-b ">
             <h2 className="text-xl font-semibold">Messages</h2>
-            <Button variant="outline">
-              Today <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
           </div>
 
           <div className="flex h-full w-full">
@@ -222,14 +228,14 @@ export default function MessagingInterface() {
                         }`}
                         onClick={() => setSelectedContact(contact)}
                       >
-                        <div className="w-12 h-12 rounded-full overflow-hidden mr-3">
-                          {/* <Image
-                        src={User}
-                        alt={contact.name}
-                        width={48}
-                        height={48}
-                        className="object-cover"
-                      /> */}
+                        <div className="w-12 h-12 rounded-sm bg-white overflow-hidden mr-3">
+                          <Image
+                            src={messages}
+                            alt={contact.name}
+                            width={48}
+                            height={48}
+                            className="object-cover opacity-40"
+                          />
                         </div>
                         <div className="flex-grow">
                           <div className="flex justify-between">
@@ -264,13 +270,13 @@ export default function MessagingInterface() {
               {/* Chat Header */}
               <div className="p-4 border-b flex items-center">
                 <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
-                  {/* <Image
-                    src={User}
+                  <Image
+                    src={messages}
                     alt={selectedContact?.name}
                     width={40}
                     height={40}
                     className="object-cover"
-                  /> */}
+                  />
                 </div>
                 <div>
                   <h3 className="font-medium">{selectedContact?.name}</h3>
@@ -374,7 +380,7 @@ export default function MessagingInterface() {
                   className="ml-2 bg-[#106C83] hover:bg-teal-700"
                   onClick={handleSendMessage}
                 >
-                  <Send className="h-4 w-4" />
+                 {sending?<span className="loader"></span>: <Send className="h-4 w-4" />}
                 </Button>
               </div>
             </div>

@@ -247,7 +247,7 @@ useEffect(() => {
                         <span
                           onClick={() =>
                             router.push(
-                              `/orders/Vieworder/${application?.orderId}`
+                              `/orders/Vieworder/${application?.payment?._id}`
                             )
                           }
                           className="text-[#106C83] hover:underline font-medium cursor-pointer"

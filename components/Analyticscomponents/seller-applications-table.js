@@ -126,7 +126,7 @@ export default function SellerApplicationsTable() {
                           variant="outline"
                           className={`
                             ${
-                              application.CompanyId === "Pending"
+                              application.isCompanyVerified === "Pending"
                                 ? "text-amber-500 border-amber-200 bg-amber-50"
                                 : ""
                             }
@@ -153,7 +153,16 @@ export default function SellerApplicationsTable() {
                             View Profile
                           </span>
                         ) : (
-                          <DocumentApprovalPage/>
+                         <span
+                            onClick={() =>
+                              router.push(
+                                `/product-seller/profiledoc/${application?._id}`
+                              )
+                            }
+                            className="text-[#106C83] hover:underline cursor-pointer font-medium"
+                          >
+                            View Profile
+                          </span>
                         )}
                       </TableCell>
                     </TableRow>

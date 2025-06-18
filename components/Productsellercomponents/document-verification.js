@@ -42,7 +42,7 @@ export default function Documents({ document ,id}) {
   const { addToast } = useToast();
   const dispatch = useDispatch();
   if (!document || typeof document !== "object") {
-    return <p className="text-sm text-red-500">No documents available.</p>;
+    return <p className="text-sm text-red-500 w-full flex justify-center items-center">No documents available.</p>;
   }
   const entries = Object.entries(document);
 
