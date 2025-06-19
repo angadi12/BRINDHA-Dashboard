@@ -165,7 +165,7 @@ export function MeasurementsTable() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="measurement">Tax Type</Label>
+                      <Label htmlFor="measurement">Measurement Type</Label>
                       <Input
                         id="measurement"
                         placeholder="Enter measurement type"

@@ -28,6 +28,7 @@ import {
 import { Banknote, Landmark, Users } from "lucide-react";
 import Documents from "./document-verification";
 import { Skeleton } from "@/components/ui/skeleton";
+import Documentspreview from "./document-verification";
 
 export default function SellerDocProfile() {
   const params = useParams();
@@ -259,7 +260,7 @@ export default function SellerDocProfile() {
                 {/* You can replace the above with a skeleton loader if you want */}
               </div>
             ) : (
-              <Documents document={profile?.CompanyId?.Documents}  id={profile?._id}/>
+              <Documentspreview document={profile?.CompanyId?.Documents}  id={profile?._id}/>
             )}
           </div>
         </div>

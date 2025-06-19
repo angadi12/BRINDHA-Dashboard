@@ -135,6 +135,11 @@ export default function SellerApplicationsTable() {
                                 ? "text-green-500 border-green-200 bg-green-50"
                                 : ""
                             }
+                            ${
+                              application?.isCompanyVerified === "Requestsend"
+                                ? "text-blue-500 border-blue-200 bg-blue-50"
+                                : ""
+                            }
                           `}
                         >
                           {application?.isCompanyVerified}

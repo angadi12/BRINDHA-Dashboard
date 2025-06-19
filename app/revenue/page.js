@@ -65,13 +65,13 @@ export default function SellerDashboard() {
               <TabsList className="bg-transparent p-0">
                 <TabsTrigger
                   value="completed"
-                  className="px-0 py-2 mr-6 data-[state=active]:bg-transparent data-[state=active]:border-b-2 border-0 data-[state=active]:border-[#106C83] data-[state=active]:rounded-none data-[state=active]:shadow-none"
+                  className="px-0 py-2 cursor-pointer mr-6 data-[state=active]:bg-transparent data-[state=active]:border-b-2 border-0 data-[state=active]:border-[#106C83] data-[state=active]:rounded-none data-[state=active]:shadow-none"
                 >
                   Completed Transaction
                 </TabsTrigger>
                 <TabsTrigger
                   value="pending"
-                  className="px-0 py-2 data-[state=active]:bg-transparent data-[state=active]:border-b-2 border-0 data-[state=active]:border-[#106C83] data-[state=active]:rounded-none data-[state=active]:shadow-none"
+                  className="px-0 py-2 cursor-pointer data-[state=active]:bg-transparent data-[state=active]:border-b-2 border-0 data-[state=active]:border-[#106C83] data-[state=active]:rounded-none data-[state=active]:shadow-none"
                 >
                   Pending Transaction
                 </TabsTrigger>
@@ -143,7 +143,7 @@ export default function SellerDashboard() {
                           </TableCell>
                           <TableCell>
                             <Link
-                              href={`/revenue/Viewbreakdown/${transaction?._id}`}
+                              href={`/revenue/viewbreakdetails/${transaction?._id}`}
                               className="text-[#106C83] hover:underline"
                             >
                               View Breakdown
