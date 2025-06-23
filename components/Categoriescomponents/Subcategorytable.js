@@ -45,11 +45,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Uploadfile } from "@/lib/API/Fileupload/Singlefile";
-import { Createsubcategory } from "@/lib/API/Master/Master";
+import { Createsubcategory, DeleteSubcategory } from "@/lib/API/Master/Master";
 import { useToast } from "@/components/ui/toast-provider";
 
 export function Subcategorytable() {
-    const { addToast } = useToast();
+  const { addToast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     categoryName: "",
@@ -63,6 +63,8 @@ export function Subcategorytable() {
     (state) => state.master
   );
   const [selectedcategory, setselectedcategory] = useState("");
+const [isDeleting, setIsDeleting] = useState(false); 
+  const [deleteid,Setdeleteid]=useState("")
 
   useEffect(() => {
     dispatch(fetchAllSubCategories());
@@ -99,74 +101,109 @@ export function Subcategorytable() {
     setImagePreview(null);
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-   if (!formData.categoryName){
-     addToast({
-          title: `"Category Name Required`,
-          description:"Category field required",
-          variant: "destructive",
+    if (!selectedcategory) {
+      addToast({
+        title: `"Category Name Required`,
+        description: "Category field required",
+        variant: "destructive",
+        duration: 2000,
+      });
+    }
+
+    //  if(!formData.image){
+    //    addToast({
+    //         title: `"Image Required`,
+    //         description:"Image required",
+    //         variant: "destructive",
+    //         duration: 2000,
+    //       });
+    //  }
+
+    try {
+      // let imageUrl = "";
+      // if (formData.image) {
+      //   const uploadResult = await Uploadfile(formData.image);
+      //   if (uploadResult.status) {
+      //     imageUrl = uploadResult.data;
+      //   } else {
+      //     console.error("Image upload failed:", uploadResult.message);
+      //     return;
+      //   }
+      // }
+
+      const subcategoryData = {
+        CategoryId: selectedcategory,
+        Subcategoryname: formData.subcategoryName,
+        // Image: imageUrl,
+      };
+
+      // Step 3: Send data to the API to create subcategory
+      const result = await Createsubcategory(subcategoryData);
+
+      if (result.status) {
+        // Reset form and close dialog if successful
+        setFormData({ categoryName: "", subcategoryName: "" });
+        setImagePreview(null);
+        setIsDialogOpen(false);
+
+        // Refetch the subcategories
+        dispatch(fetchAllSubCategories());
+        addToast({
+          title: `Subcategory created successfully!`,
+          description: result.message,
+          variant: "success",
           duration: 2000,
         });
-   }
-
-   if(!formData.image){
-     addToast({
-          title: `"Image Required`,
-          description:"Image required",
-          variant: "destructive",
-          duration: 2000,
-        });
-   }
-
-
-  try {
-    let imageUrl = "";
-    if (formData.image) {
-      const uploadResult = await Uploadfile(formData.image);
-      if (uploadResult.status) {
-        imageUrl = uploadResult.data; 
       } else {
-        console.error("Image upload failed:", uploadResult.message);
-        return;
+        addToast({
+          title: `Error creating subcategory:`,
+          description: result.message,
+          variant: "destructive",
+          duration: 2000,
+        });
       }
+    } catch (error) {
+      addToast({
+        title: `Error creating subcategory:`,
+        description: error,
+        variant: "destructive",
+        duration: 2000,
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const subcategoryData = {
-      CategoryId: selectedcategory,  
-      Subcategoryname: formData.subcategoryName,
-      Image: imageUrl,
-    };
-
-    // Step 3: Send data to the API to create subcategory
-    const result = await Createsubcategory(subcategoryData);
-
-    if (result.status) {
-      // Reset form and close dialog if successful
-      setFormData({ categoryName: "", subcategoryName: "", image: null });
-      setImagePreview(null);
-      setIsDialogOpen(false);
-
-      // Refetch the subcategories
-      dispatch(fetchAllSubCategories());
-      console.log("Subcategory created successfully!");
-    } else {
-      console.error("Error creating subcategory:", result.message);
-    }
-  } catch (error) {
-    console.error("Error creating subcategory:", error);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
+  };
 
   const resetForm = () => {
     setFormData({ categoryName: "", subcategoryName: "", image: null });
     setImagePreview(null);
   };
+
+
+
+const handleDelete = async (deleteid) => {
+    setIsDeleting(true); 
+
+    try {
+      const result = await DeleteSubcategory(deleteid);
+
+      if (result.status) {
+        dispatch(fetchAllSubCategories()); 
+      } else {
+
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    } finally {
+      setIsDeleting(false); 
+    }
+};
+
+
 
   return (
     <div className="w-full space-y-4">
@@ -253,7 +290,7 @@ const handleSubmit = async (e) => {
                     </div>
 
                     {/* Image Upload */}
-                    <div className="space-y-2">
+                    {/* <div className="space-y-2">
                       <Label>Category Image</Label>
                       <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
                         {imagePreview ? (
@@ -302,7 +339,7 @@ const handleSubmit = async (e) => {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <DialogFooter>
@@ -420,12 +457,31 @@ const handleSubmit = async (e) => {
                             >
                               <Edit className="h-4 w-4" />
                             </button> */}
-                            <button
-                              className="p-2 cursor-pointer text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors"
-                              title="Delete subcategory"
-                            >
-                              <Trash2 className="h-4 w-4 cursor-pointer" />
-                            </button>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <button
+                                  onClick={()=>Setdeleteid(subcategory._id)}
+                                  className="p-2 text-red-600 cursor-pointer hover:text-red-800 hover:bg-red-50 rounded-md transition-colors"
+                                  title="Delete category"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-[425px]">
+                                <DialogHeader>
+                                  <DialogTitle>Confirm Delete!</DialogTitle>
+                                  <DialogDescription>
+                                    Do you want delete it?
+                                  </DialogDescription>
+                                </DialogHeader>
+
+                                <DialogFooter>
+                                  <Button onPress={()=>handleDelete(deleteid)} className="bg-red-500 text-white rounded-md">
+                                    {isDeleting?<span className="loader"></span>:"Delete"}
+                                  </Button>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
                           </div>
                         </TableCell>
                       </TableRow>

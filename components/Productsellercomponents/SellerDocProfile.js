@@ -76,13 +76,13 @@ export default function SellerDocProfile() {
                     </h1>
                   </div>
 
-                  <Link
+                {profile?.CompanyId?.BussinessWebsite &&  <Link
                     href={`${profile?.CompanyId?.BussinessWebsite}`}
                     className="text-teal-600 text-sm flex items-center hover:underline mb-2"
                   >
                     {profile?.CompanyId?.BussinessWebsite}
                     <ChevronRight className="h-3 w-3 ml-1" />
-                  </Link>
+                  </Link>}
 
                   {/* <div className="flex items-center mb-4">
                     <span className="text-yellow-500 mr-1">★</span>
@@ -93,12 +93,12 @@ export default function SellerDocProfile() {
                   </div> */}
 
                   <div className="space-y-3">
-                    <div className="flex items-start text-sm">
+                   {profile?.CompanyId?.Address?.City && <div className="flex items-start text-sm">
                       <MapPin className="h-4 w-4 text-gray-500 mr-2 mt-0.5 shrink-0" />
                       <span className="text-gray-700">
                         {profile?.CompanyId?.Address?.City}
                       </span>
-                    </div>
+                    </div>}
                     <div className="flex items-center text-sm">
                       <Mail className="h-4 w-4 text-gray-500 mr-2 shrink-0" />
                       <span className="text-gray-700">
