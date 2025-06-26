@@ -52,7 +52,6 @@ export default function SellerDocProfile() {
     dispatch(fetchSellaranalytics(props));
   }, [dispatch]);
 
-  console.log(profile);
 
   return (
     <>

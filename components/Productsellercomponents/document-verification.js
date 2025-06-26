@@ -130,11 +130,11 @@ export default function Documentspreview({ document, id }) {
           Documents for Verification
         </h1>
 
-        <div>
+        <div className="flex justify-between items-center gap-4">
           <Button
             size="sm"
             disabled={loadingAction !== null}
-            className="bg-white text-green-600 underline cursor-pointer font-semibold w-24"
+            className="bg-green-50 ring-green-500 ring-1 text-xs text-green-600 rounded-full cursor-pointer font-semibold w-24"
             onPress={() => handleStatusUpdate("Approved")}
           >
             {loadingAction === "Approved" ? (
@@ -146,22 +146,28 @@ export default function Documentspreview({ document, id }) {
 
           <Button
             size="sm"
-            isLoading={loadingAction === "Reverify"}
             disabled={loadingAction !== null}
-            className="bg-white text-yellow-600 underline cursor-pointer font-semibold w-24"
+            className="bg-yellow-50 ring-1 ring-yellow-600 text-xs rounded-full text-yellow-600  cursor-pointer font-semibold w-24"
             onPress={() => handleStatusUpdate("Reverify")}
           >
-            Reverify
+             {loadingAction === "Reverify" ? (
+              <span className="loader2"></span>
+            ) : (
+              "Reverify"
+            )}
           </Button>
 
           <Button
             size="sm"
-            isLoading={loadingAction === "Rejected"}
             disabled={loadingAction !== null}
-            className="bg-white text-red-600 underline cursor-pointer font-semibold w-32"
+            className="bg-red-50 ring-1 ring-red-600 rounded-full text-red-600 text-xs cursor-pointer font-semibold w-32"
             onPress={() => handleStatusUpdate("Rejected")}
           >
-            Blacklist Seller
+              {loadingAction === "Rejected" ? (
+              <span className="loader2"></span>
+            ) : (
+              "Blacklist Seller"
+            )}
           </Button>
         </div>
       </div>
