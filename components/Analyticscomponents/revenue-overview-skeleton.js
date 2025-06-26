@@ -1,6 +1,11 @@
+"use client"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useSelector } from "react-redux";
 
 export default function Revenueskeleton() {
+  const { revenueoverview, loadingrevnue, errorrevenue } = useSelector(
+    (state) => state.sellar
+  );
   return (
     <div className="p-2 bg-white rounded-lg border">
       {/* Header */}
@@ -39,6 +44,12 @@ export default function Revenueskeleton() {
           <div className="h-60 bg-gray-50 rounded relative overflow-hidden">
          
           </div>
+
+           {loadingrevnue && (
+        <div className="absolute w-full -translate-y-1/2 -translate-x-1/2 top-1/3 left-11/12 right-1/2 ">
+          <span className="loader2"></span>
+        </div>
+      )}
 
           {/* X-axis labels */}
           <div className="flex justify-between mt-4 text-sm text-gray-500">

@@ -1,5 +1,5 @@
 "use client";
-import { Download } from "lucide-react";
+import { Download, IdCard } from "lucide-react";
 import { Button } from "@heroui/react";
 import { Card } from "@/components/ui/card";
 import { useDispatch, useSelector } from "react-redux";
@@ -181,7 +181,7 @@ export default function Documentspreview({ document, id }) {
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 mt-1">
                     <div className="w-10 h-10 border border-gray-300 rounded-md flex items-center justify-center bg-gray-50">
-                      <Download className="w-5 h-5 text-gray-600" />
+                      <IdCard className="w-5 h-5 text-gray-600" />
                     </div>
                   </div>
 

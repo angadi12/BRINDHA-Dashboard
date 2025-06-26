@@ -71,7 +71,7 @@ export default function RevenueOverview() {
                   <SelectContent>
                     <SelectItem value="week">This Week</SelectItem>
                     <SelectItem value="month">This Month</SelectItem>
-                    <SelectItem value="year">This Year</SelectItem>
+                    {/* <SelectItem value="year">This Year</SelectItem> */}
                   </SelectContent>
                 </Select>
               </div>
