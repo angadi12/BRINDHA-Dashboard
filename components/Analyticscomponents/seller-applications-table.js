@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllSellars } from "@/lib/Redux/Slices/sellarSlice";
 import { useRouter } from "next/navigation";
 import DocumentApprovalPage from "../Productsellercomponents/document-approval";
+import { Eye } from "lucide-react";
 
 export default function SellerApplicationsTable() {
   const [activeTab, setActiveTab] = useState("seller");
@@ -140,6 +141,16 @@ export default function SellerApplicationsTable() {
                                 ? "text-blue-500 border-blue-200 bg-blue-50"
                                 : ""
                             }
+                            ${
+                              application?.isCompanyVerified === "Rejected"
+                                ?  "text-red-500 border-red-200 bg-red-50"
+                                : ""
+                            }
+                            ${
+                              application?.isCompanyVerified === "Reverify"
+                                ?  "text-yellow-700 border-yellow-200 bg-yellow-50"
+                                : ""
+                            }
                           `}
                         >
                           {application?.isCompanyVerified}
@@ -155,7 +166,7 @@ export default function SellerApplicationsTable() {
                             }
                             className="text-[#106C83] hover:underline cursor-pointer font-medium"
                           >
-                            View Profile
+                            <Eye/>
                           </span>
                         ) : (
                          <span
@@ -166,7 +177,7 @@ export default function SellerApplicationsTable() {
                             }
                             className="text-[#106C83] hover:underline cursor-pointer font-medium"
                           >
-                            View Profile
+                            <Eye/>
                           </span>
                         )}
                       </TableCell>

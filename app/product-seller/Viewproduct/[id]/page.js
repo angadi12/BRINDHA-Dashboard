@@ -23,6 +23,8 @@ export default function ProductDetailsPage() {
   const [loadingApprove, setLoadingApprove] = useState(false);
   const [loadingReject, setLoadingReject] = useState(false);
   const [loading, setLoading] = useState(false);
+    const [imageindex, Setimageindex] = useState(0);
+
   useEffect(() => {
     if (id) {
       dispatch(fetchSellarproduct(id));
@@ -119,7 +121,7 @@ export default function ProductDetailsPage() {
               className="h-5 w-5 mr-2 cursor-pointer"
               onClick={() => router.back()}
             />
-            <h1 className="text-xl font-bold">Product Details</h1>
+            <h1 className="text-lg font-bold">Product Details</h1>
           </header>
 
           <div className="p-4">
@@ -129,53 +131,33 @@ export default function ProductDetailsPage() {
               <div className="w-full md:w-1/2">
                 <div className="rounded-lg overflow-hidden mb-2">
                   <Image
-                    src={Product?.Images[0]}
+                    src={Product?.Images[imageindex]}
                     alt="Product Image"
-                    width={400}
-                    height={300}
-                    className="w-full h-96 object-cover"
+                    width={500}
+                    height={500}
+                    className="w-full h-80 object-cover"
                   />
                 </div>
-                <div className="flex gap-2">
-                  <div className="w-1/4 h-24 bg-gray-100 rounded-lg overflow-hidden border">
-                    <Image
-                      src="/placeholder.svg?height=100&width=100"
-                      alt="Thumbnail 1"
-                      width={100}
-                      height={100}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="w-1/4 h-24 bg-gray-100 rounded-lg overflow-hidden border">
-                    <Image
-                      src="/placeholder.svg?height=100&width=100"
-                      alt="Thumbnail 2"
-                      width={100}
-                      height={100}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="w-1/4 h-24 bg-gray-100 rounded-lg overflow-hidden border">
-                    <Image
-                      src="/placeholder.svg?height=100&width=100"
-                      alt="Thumbnail 3"
-                      width={100}
-                      height={100}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="w-1/4 h-24 bg-gray-100 rounded-lg overflow-hidden border relative">
-                    <Image
-                      src="/placeholder.svg?height=100&width=100"
-                      alt="Thumbnail 4"
-                      width={100}
-                      height={100}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <span className="text-white text-3xl font-bold">5</span>
+              <div className="flex gap-2 mt-4">
+                  {Product?.Images.map((img, key) => (
+                    <div
+                      key={key}
+                      onClick={() => Setimageindex(key)}
+                      className={
+                        key === imageindex
+                          ? "w-1/4 h-16 ring-1 ring-[#106C83] cursor-pointer  bg-gray-100 rounded-lg overflow-hidden border"
+                          : "w-1/4 h-16 cursor-pointer  bg-gray-100 rounded-lg overflow-hidden border"
+                      }
+                    >
+                      <Image
+                        src={img}
+                        alt="Thumbnail 1"
+                        width={100}
+                        height={100}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
@@ -184,9 +166,9 @@ export default function ProductDetailsPage() {
                 <div className="inline-block bg-[#106C83] text-white px-3 py-1 rounded-md text-sm mb-2">
                   Product Category
                 </div>
-                <h2 className="text-3xl font-bold mb-1">{Product?.Name}</h2>
+                <h2 className="text-lg font-bold mb-1">{Product?.Name}</h2>
                 <p className="text-[#106C83] mb-4">Seller Name</p>
-                <div className="text-right text-3xl font-bold mb-4">
+                <div className="text-right text-lg font-bold mb-4">
                   ₹{Product?.Yourprice}
                 </div>
 
@@ -211,7 +193,7 @@ export default function ProductDetailsPage() {
                     ))}
                   </div>
 
-                  <h3 className="font-bold mb-3">Select Avalible</h3>
+                  {/* <h3 className="font-bold mb-3">Select Avalible</h3>
                   <div className="flex flex-wrap gap-2 mb-4">
                     <button className="bg-gray-200 px-4 py-2 rounded-md text-sm">
                       Small - 5 KG
@@ -222,21 +204,25 @@ export default function ProductDetailsPage() {
                     <button className="bg-gray-200 px-4 py-2 rounded-md text-sm">
                       Small - 5 KG
                     </button>
-                  </div>
+                  </div> */}
 
                   <h3 className="font-bold mb-3">Select Available</h3>
-                  <div className="flex gap-3 mb-4">
-                    <button className="w-10 h-10 rounded-full bg-yellow-200 border"></button>
-                    <button className="w-10 h-10 rounded-full bg-blue-300 border"></button>
-                    <button className="w-10 h-10 rounded-full bg-green-400 border"></button>
-                    <button className="w-10 h-10 rounded-full bg-pink-400 border"></button>
-                    <button className="w-10 h-10 rounded-full bg-teal-700 border"></button>
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    {Product?.colors?.map((col, key) => (
+                      <button
+                        key={key}
+                        style={{ backgroundColor: col }}
+                        className={`w-10 h-10 rounded-full  border`}
+                      ></button>
+                    ))}
                   </div>
 
                   <div className="border-t pt-4">
                     <p className="font-bold">
                       Quantity Available -{" "}
-                      <span className="font-normal">200 per color</span>
+                      <span className="font-normal">
+                        {Product?.Stock}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -245,10 +231,10 @@ export default function ProductDetailsPage() {
 
             {/* Description Section */}
             <div className="mt-6">
-              <h2 className="text-2xl font-bold mb-4 border-b pb-2">
+              <h2 className="text-lg font-bold mb-4 border-b pb-2">
                 Description
               </h2>
-              <h3 className="text-xl font-bold mb-2">
+              <h3 className="text-lg font-bold mb-2">
                 Lorem ipsum dolor sit amet elit.
               </h3>
               <p className="text-gray-600 mb-4">{Product?.Description}</p>

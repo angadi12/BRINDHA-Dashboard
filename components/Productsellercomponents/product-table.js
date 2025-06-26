@@ -57,8 +57,10 @@ export default function ProductTable() {
     switch (status) {
       case "In Stock":
         return "text-green-600";
+      case "Approved":
+        return "text-green-600 bg-green-50 ring-1 ring-green-600 px-2 p-1 text-xs rounded-full";
       case "Pending":
-        return "text-amber-500";
+        return "text-amber-600 bg-amber-50 ring-1 ring-amber-600 px-2 p-1 text-xs rounded-full ";
       case "Out of Stock":
         return "text-red-600";
       default:
@@ -85,7 +87,7 @@ export default function ProductTable() {
   return (
     <>
       <Card className="w-full">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 mb-0 ">
           <CardTitle className="text-lg font-medium">
             <Tabs
               defaultValue="approved"
@@ -117,7 +119,7 @@ export default function ProductTable() {
         ) : (
           <>
             {productdata?.length > 0 ? (
-              <CardContent className="p-3 overflow-hidden">
+              <CardContent className="p-2 overflow-hidden">
                 <ScrollArea className="h-auto rounded-md overflow-hidden">
                   <Table className="overflow-hidden">
                     <TableHeader className="bg-gray-100 text-[#9C9C9C]">

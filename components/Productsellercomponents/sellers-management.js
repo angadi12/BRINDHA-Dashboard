@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Filter } from "lucide-react";
+import { Eye, Filter } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -357,9 +357,9 @@ console.log(filteredSellers)
                     <TableHead className="text-xs font-medium text-gray-500">
                       CONTACT
                     </TableHead>
-                    <TableHead className="text-xs font-medium text-gray-500">
+                    {/* <TableHead className="text-xs font-medium text-gray-500">
                       REGISTRATION DATE
-                    </TableHead>
+                    </TableHead> */}
                     <TableHead className="text-xs font-medium text-gray-500">
                       STATUS
                     </TableHead>
@@ -383,11 +383,11 @@ console.log(filteredSellers)
                       <TableCell>{application?.Vendorname}</TableCell>
                       <TableCell>{application.Email}</TableCell>
                       <TableCell>{application?.Number}</TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         {new Date(application?.createdAt)?.toLocaleDateString(
                           "en-GB"
                         )}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell>
                         <Badge
                           className={`font-medium ${
@@ -395,8 +395,10 @@ console.log(filteredSellers)
                               ? "text-amber-500 bg-amber-50 border-amber-300"
                               : application.isCompanyVerified === "Approved"
                               ? "text-green-500 border-green-200 bg-green-50"
+                              : application.isCompanyVerified === "Reverify"
+                              ? "text-yellow-700 border-yellow-200 bg-yellow-50"
                               : application.isCompanyVerified === "Rejected"
-                              ? "text-red-500"
+                              ? "text-red-500 border-red-200 bg-red-50"
                               : "text-gray-500"
                           }`}
                         >
@@ -413,7 +415,7 @@ console.log(filteredSellers)
                             }
                             className="text-[#106C83] cursor-pointer hover:underline font-medium"
                           >
-                            View Profile
+                             <Eye/>
                           </span>
                         ) : (
                           <span
@@ -424,7 +426,7 @@ console.log(filteredSellers)
                             }
                             className="text-[#106C83] cursor-pointer hover:underline font-medium"
                           >
-                            View Details
+                            <Eye/>
                           </span>
                         )}
                       </TableCell>
